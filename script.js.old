@@ -1,0 +1,3060 @@
+// DOM Elements
+document.addEventListener('DOMContentLoaded', function() {
+  // 导航栏滚动效果
+  const navbar = document.querySelector('.navbar');
+  const heroSection = document.querySelector('.hero');
+  
+  if (navbar && heroSection) {
+    const heroHeight = heroSection.offsetHeight;
+    
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 100) {
+        navbar.style.backgroundColor = 'rgba(47, 47, 47, 0.95)';
+        navbar.style.color = '#FAF9F6';
+      } else {
+        navbar.style.backgroundColor = 'rgba(250, 249, 246, 0.95)';
+        navbar.style.color = '#2F2F2F';
+      }
+    });
+  }
+
+  // 切换主题模式
+  const themeSwitch = document.querySelector('.theme-switch');
+  if (themeSwitch) {
+    themeSwitch.addEventListener('click', function() {
+      document.body.classList.toggle('dark-mode');
+      if (document.body.classList.contains('dark-mode')) {
+        themeSwitch.textContent = '☀️';
+      } else {
+        themeSwitch.textContent = '🌙';
+      }
+    });
+  }
+
+  // 语言切换
+  const langSwitch = document.querySelector('.lang-switch');
+  if (langSwitch) {
+    langSwitch.addEventListener('click', function() {
+      if (langSwitch.textContent === 'EN') {
+        langSwitch.textContent = 'CN';
+        // 这里添加实际语言切换逻辑
+      } else {
+        langSwitch.textContent = 'EN';
+        // 这里添加实际语言切换逻辑
+      }
+    });
+  }
+
+  // 按钮波纹效果
+  const buttons = document.querySelectorAll('button:not(.tag)');
+  buttons.forEach(button => {
+    button.classList.add('ripple-button');
+    button.addEventListener('click', createRipple);
+  });
+
+  function createRipple(event) {
+    const button = event.currentTarget;
+    const ripple = document.createElement('span');
+    const rect = button.getBoundingClientRect();
+    
+    const size = Math.max(rect.width, rect.height);
+    const x = event.clientX - rect.left - size / 2;
+    const y = event.clientY - rect.top - size / 2;
+    
+    ripple.style.width = ripple.style.height = `${size}px`;
+    ripple.style.left = `${x}px`;
+    ripple.style.top = `${y}px`;
+    
+    button.appendChild(ripple);
+    
+    setTimeout(() => {
+      ripple.remove();
+    }, 600);
+  }
+
+  // 材料标签交互
+  const materialTags = document.querySelectorAll('.material-tags .tag');
+  if (materialTags.length > 0) {
+    materialTags.forEach(tag => {
+      tag.addEventListener('click', function() {
+        materialTags.forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        
+        // 标签缝合动画效果
+        const tagText = this.textContent;
+        const filterDisplay = document.createElement('div');
+        filterDisplay.classList.add('active-filter');
+        filterDisplay.textContent = `已筛选: ${tagText}`;
+        
+        const filterContainer = document.querySelector('.material-tags');
+        const existingFilter = document.querySelector('.active-filter');
+        
+        if (existingFilter) {
+          filterContainer.removeChild(existingFilter);
+        }
+        
+        if (tagText !== '全部') {
+          filterContainer.appendChild(filterDisplay);
+        }
+        
+        // 这里添加实际过滤逻辑
+        filterProjects(tagText);
+      });
+    });
+  }
+
+  // 模拟项目过滤功能
+  function filterProjects(category) {
+    console.log(`Filtering projects by: ${category}`);
+    // 实际项目中这里会根据类别过滤DOM元素或从服务器请求数据
+  }
+
+  // 生成3D展示墙
+  initShowcase3D();
+
+  // 生成项目展示卡片
+  generateProjectCards();
+
+  // 聊天界面交互
+  console.log('准备初始化聊天界面...');
+  setTimeout(() => {
+    initChatInterface();
+  }, 500); // 延迟一点时间确保DOM完全加载
+
+  // 视差滚动效果
+  initParallaxEffect();
+
+  // 初始化对接进度面板
+  initTrackingPanel();
+
+  // 初始化订阅系统
+  initNewsletterSystem();
+  initContentUpdateSystem();
+  
+  // 模拟当网站有更新时，预览将要发送的订阅内容
+  const testPreviewBtn = document.createElement('button');
+  testPreviewBtn.className = 'test-preview';
+  testPreviewBtn.textContent = '测试订阅更新预览';
+  testPreviewBtn.style.display = 'none'; // 实际使用时设为none，这里为了演示
+  testPreviewBtn.addEventListener('click', () => {
+    sendSubscriptionUpdates();
+  });
+  document.body.appendChild(testPreviewBtn);
+  
+  // 添加管理员触发器，实际项目中这会是一个管理员界面功能
+  const adminKey = 'Ctrl+Alt+U';
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.altKey && e.key === 'u') {
+      sendSubscriptionUpdates();
+    }
+  });
+
+  // 添加窗口调整大小事件，确保面板正确显示
+  window.addEventListener('resize', function() {
+    initTrackingPanel();
+    adjustChatHeight(); // 确保聊天界面高度适配
+  });
+  
+  // 添加重试机制，防止面板初始化失败
+  setTimeout(() => {
+    const processFlow = document.querySelector('.process-flow');
+    if (processFlow && processFlow.children.length === 0) {
+      console.log('尝试重新初始化对接进度面板');
+      initTrackingPanel();
+    }
+    
+    // 检查聊天界面是否正确初始化
+    const chatMessages = document.querySelector('.chat-messages');
+    if (chatMessages && chatMessages.children.length === 0) {
+      console.log('尝试重新初始化聊天界面');
+      initChatInterface();
+    }
+  }, 1000);
+});
+
+// 3D展示墙初始化
+function initShowcase3D() {
+  const container = document.querySelector('.showcase-container');
+  if (!container) return;
+
+  // 移除占位符
+  const placeholder = container.querySelector('.placeholder-3d');
+  if (placeholder) {
+    container.removeChild(placeholder);
+  }
+
+  // 创建3D展示墙 - 简化版模拟
+  // 在完整实现中，这里应该使用Three.js库
+  
+  // 创建6个展示卡片作为立方体的面
+  const cube = document.createElement('div');
+  cube.classList.add('showcase-cube');
+  
+  for (let i = 0; i < 6; i++) {
+    const face = document.createElement('div');
+    face.classList.add('cube-face', `face-${i+1}`);
+    
+    const image = document.createElement('img');
+    image.src = `assets/project-${i+1}.jpg`;
+    image.alt = `改造项目 ${i+1}`;
+    
+    face.appendChild(image);
+    cube.appendChild(face);
+    
+    // 点击展开详情
+    face.addEventListener('click', function() {
+      showProjectDetail(i+1);
+    });
+  }
+  
+  container.appendChild(cube);
+  
+  // 添加拖动交互
+  let isDragging = false;
+  let previousX = 0;
+  let previousY = 0;
+  let rotX = 0;
+  let rotY = 0;
+  
+  container.addEventListener('mousedown', function(e) {
+    isDragging = true;
+    previousX = e.clientX;
+    previousY = e.clientY;
+    container.style.cursor = 'grabbing';
+  });
+  
+  window.addEventListener('mousemove', function(e) {
+    if (isDragging) {
+      const dx = e.clientX - previousX;
+      const dy = e.clientY - previousY;
+      
+      rotY += dx * 0.5;
+      rotX -= dy * 0.5;
+      
+      cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+      
+      previousX = e.clientX;
+      previousY = e.clientY;
+    }
+  });
+  
+  window.addEventListener('mouseup', function() {
+    isDragging = false;
+    container.style.cursor = 'grab';
+  });
+}
+
+// 项目详情弹窗
+function showProjectDetail(projectId) {
+  // 创建模态框
+  const modal = document.createElement('div');
+  modal.classList.add('project-modal');
+  
+  const modalContent = document.createElement('div');
+  modalContent.classList.add('modal-content');
+  
+  // 添加关闭按钮
+  const closeBtn = document.createElement('button');
+  closeBtn.classList.add('close-modal');
+  closeBtn.innerHTML = '&times;';
+  closeBtn.addEventListener('click', function() {
+    document.body.removeChild(modal);
+  });
+  
+  // 添加项目内容
+  const projectContent = document.createElement('div');
+  projectContent.classList.add('project-detail');
+  
+  const projectTitle = document.createElement('h3');
+  projectTitle.textContent = `改造项目 ${projectId}`;
+  
+  const beforeAfterContainer = document.createElement('div');
+  beforeAfterContainer.classList.add('before-after-slider');
+  
+  // 这里简化实现，实际项目中应该使用更复杂的滑块对比组件
+  const beforeImg = document.createElement('img');
+  beforeImg.src = `assets/project-${projectId}-before.jpg`;
+  beforeImg.alt = '改造前';
+  
+  const afterImg = document.createElement('img');
+  afterImg.src = `assets/project-${projectId}-after.jpg`;
+  afterImg.alt = '改造后';
+  
+  beforeAfterContainer.appendChild(beforeImg);
+  beforeAfterContainer.appendChild(afterImg);
+  
+  const projectDesc = document.createElement('p');
+  projectDesc.textContent = '这是一个旧牛仔裤改造项目，通过拼接剪裁和手工装饰，将废旧牛仔裤变成时尚单肩包。采用零浪费设计原则，甚至将拉链和纽扣也重新利用。';
+  
+  const designSketch = document.createElement('img');
+  designSketch.classList.add('design-sketch');
+  designSketch.src = `assets/sketch-${projectId}.jpg`;
+  designSketch.alt = '设计草图';
+  
+  projectContent.appendChild(projectTitle);
+  projectContent.appendChild(beforeAfterContainer);
+  projectContent.appendChild(projectDesc);
+  projectContent.appendChild(designSketch);
+  
+  modalContent.appendChild(closeBtn);
+  modalContent.appendChild(projectContent);
+  modal.appendChild(modalContent);
+  
+  document.body.appendChild(modal);
+}
+
+// 生成项目卡片
+function generateProjectCards() {
+  const projectsGrid = document.querySelector('.projects-grid');
+  if (!projectsGrid) return;
+  
+  // 模拟数据
+  const projectsData = [
+    { id: 1, title: '牛仔外套改造', material: '牛仔', difficulty: 4, imageUrl: 'assets/project-1.jpg' },
+    { id: 2, title: '丝质围巾变裙', material: '丝绸', difficulty: 3, imageUrl: 'assets/project-2.jpg' },
+    { id: 3, title: '亚麻衬衫翻新', material: '棉麻', difficulty: 2, imageUrl: 'assets/project-3.jpg' },
+    { id: 4, title: '皮夹克改造', material: '皮革', difficulty: 5, imageUrl: 'assets/project-4.jpg' },
+    { id: 5, title: '针织衫重构', material: '针织', difficulty: 3, imageUrl: 'assets/project-5.jpg' },
+    { id: 6, title: '牛仔裤变包', material: '牛仔', difficulty: 4, imageUrl: 'assets/project-6.jpg' },
+    { id: 7, title: '丝巾再造', material: '丝绸', difficulty: 2, imageUrl: 'assets/project-7.jpg' },
+    { id: 8, title: '棉布拼接', material: '棉麻', difficulty: 3, imageUrl: 'assets/project-8.jpg' }
+  ];
+  
+  projectsData.forEach(project => {
+    const card = document.createElement('div');
+    card.classList.add('project-card', 'card-3d');
+    card.dataset.material = project.material;
+    
+    const cardInner = document.createElement('div');
+    cardInner.classList.add('card-inner');
+    
+    // 卡片正面
+    const cardFront = document.createElement('div');
+    cardFront.classList.add('card-front');
+    
+    const image = document.createElement('img');
+    image.src = project.imageUrl;
+    image.alt = project.title;
+    
+    const title = document.createElement('h4');
+    title.textContent = project.title;
+    
+    const difficultyContainer = document.createElement('div');
+    difficultyContainer.classList.add('difficulty-stars');
+    
+    // 添加难度星级
+    for (let i = 0; i < 5; i++) {
+      const star = document.createElement('span');
+      star.classList.add('star');
+      if (i < project.difficulty) {
+        star.classList.add('filled');
+      }
+      difficultyContainer.appendChild(star);
+    }
+    
+    cardFront.appendChild(image);
+    cardFront.appendChild(title);
+    cardFront.appendChild(difficultyContainer);
+    
+    // 卡片背面
+    const cardBack = document.createElement('div');
+    cardBack.classList.add('card-back');
+    
+    const materialChart = document.createElement('div');
+    materialChart.classList.add('material-chart');
+    materialChart.innerHTML = `<h5>材料成分</h5>
+      <div class="chart-container">
+        <canvas class="radar-chart" width="150" height="150"></canvas>
+      </div>
+      <p>主要材质: ${project.material}</p>`;
+    
+    const storyPreview = document.createElement('div');
+    storyPreview.classList.add('story-preview');
+    storyPreview.innerHTML = `<p>这是一个关于如何给旧衣物赋予新生命的故事，点击查看完整改造过程...</p>`;
+    
+    const viewButton = document.createElement('button');
+    viewButton.classList.add('view-button');
+    viewButton.textContent = '查看详情';
+    viewButton.addEventListener('click', function() {
+      showProjectDetail(project.id);
+    });
+    
+    cardBack.appendChild(materialChart);
+    cardBack.appendChild(storyPreview);
+    cardBack.appendChild(viewButton);
+    
+    cardInner.appendChild(cardFront);
+    cardInner.appendChild(cardBack);
+    card.appendChild(cardInner);
+    
+    projectsGrid.appendChild(card);
+  });
+}
+
+// 聊天界面交互
+function initChatInterface() {
+  console.log('初始化聊天界面...');
+  
+  const chatInput = document.querySelector('.chat-input input');
+  const sendButton = document.querySelector('.send-button');
+  const chatMessages = document.querySelector('.chat-messages');
+  const chatInterface = document.querySelector('.chat-interface');
+  const chatSidebar = document.querySelector('.chat-sidebar');
+  
+  // 添加更强的错误处理和调试
+  if (!chatInput) {
+    console.error('聊天输入框未找到');
+  }
+  
+  if (!sendButton) {
+    console.error('发送按钮未找到');
+  }
+  
+  if (!chatMessages) {
+    console.error('聊天消息区域未找到');
+  }
+  
+  if (!chatInterface) {
+    console.error('聊天界面未找到');
+  }
+  
+  if (!chatSidebar) {
+    console.error('聊天侧边栏未找到');
+  }
+  
+  // 如果关键元素不存在，直接返回
+  if (!chatInput || !sendButton || !chatMessages) {
+    console.error('聊天关键元素未找到，初始化失败');
+    // 延迟重试一次
+    setTimeout(() => {
+      console.log('尝试重新初始化聊天界面...');
+      initChatInterface();
+    }, 1000);
+    return;
+  }
+  
+  console.log('聊天界面元素已找到，继续初始化');
+  
+  // 确保聊天区域可见
+  if (chatInterface) {
+    chatInterface.style.display = 'flex';
+  }
+  
+  // 尝试从localStorage恢复当前会话ID，如果没有则创建新会话
+  let currentSessionId = localStorage.getItem('currentSessionId');
+  let currentSessionTitle = "新对话";
+  
+  // 如果没有当前会话ID或者该会话不存在，创建新会话
+  if (!currentSessionId) {
+    currentSessionId = generateSessionId();
+    localStorage.setItem('currentSessionId', currentSessionId);
+    console.log('创建新会话ID:', currentSessionId);
+  } else {
+    // 尝试从localStorage中获取该会话的标题
+    console.log('尝试恢复会话ID:', currentSessionId);
+    try {
+      const chatHistory = JSON.parse(localStorage.getItem('chatHistory')) || {};
+      if (chatHistory[currentSessionId]) {
+        currentSessionTitle = chatHistory[currentSessionId].title || "新对话";
+        console.log('恢复会话标题:', currentSessionTitle);
+      } else {
+        // 如果会话不存在，创建新会话
+        console.log('会话不存在，创建新会话');
+        currentSessionId = generateSessionId();
+        localStorage.setItem('currentSessionId', currentSessionId);
+      }
+    } catch (e) {
+      console.error('解析聊天历史记录时出错:', e);
+      // 出错时重置会话
+      currentSessionId = generateSessionId();
+      localStorage.setItem('currentSessionId', currentSessionId);
+    }
+  }
+  
+  // 添加默认欢迎消息
+  try {
+    console.log('添加欢迎消息...');
+    chatMessages.innerHTML = ''; // 确保消息区域为空
+    
+    const systemMessage = document.createElement('div');
+    systemMessage.classList.add('message', 'system-message');
+    
+    const needleIcon = document.createElement('span');
+    needleIcon.classList.add('needle-icon');
+    needleIcon.innerHTML = '🧵';
+    
+    const messageText = document.createElement('span');
+    messageText.innerHTML = '欢迎来到Fashion Reborn服装改造艺术空间！我是您的顾问，有任何关于清理库存、收购库存，改造成衣或面料的问题都可以咨询我。如需直接联系，请添加微信：<strong>JJ1598929032</strong>';
+    
+    systemMessage.appendChild(needleIcon);
+    systemMessage.appendChild(messageText);
+    
+    chatMessages.appendChild(systemMessage);
+    console.log('欢迎消息已添加');
+  } catch (e) {
+    console.error('添加欢迎消息时出错:', e);
+  }
+  
+  try {
+    // 初始化历史会话
+    console.log('初始化历史会话...');
+    initChatHistory(chatSidebar);
+    
+    // 如果有当前会话ID，加载该会话
+    if (currentSessionId) {
+      console.log('加载会话:', currentSessionId);
+      loadSession(currentSessionId);
+    }
+    
+    // 确保滚动到底部
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  } catch (e) {
+    console.error('初始化历史会话时出错:', e);
+  }
+  
+  // 确保发送按钮和输入框事件监听器正确添加
+  try {
+    console.log('添加事件监听器...');
+    // 移除可能存在的旧监听器，避免重复
+    sendButton.removeEventListener('click', sendMessage);
+    chatInput.removeEventListener('keypress', handleKeyPress);
+    
+    // 添加新的监听器
+    sendButton.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', handleKeyPress);
+    
+    // 添加输入时的动态效果
+    chatInput.addEventListener('focus', function() {
+      this.parentElement.classList.add('input-active');
+    });
+    
+    chatInput.addEventListener('blur', function() {
+      this.parentElement.classList.remove('input-active');
+    });
+    
+    console.log('事件监听器已添加');
+  } catch (e) {
+    console.error('添加事件监听器时出错:', e);
+  }
+  
+  // 监听器处理按键事件
+  function handleKeyPress(e) {
+    if (e.key === 'Enter') {
+      sendMessage();
+    }
+  }
+  
+  // 初始调整高度
+  adjustChatHeight();
+  
+  console.log('聊天界面初始化完成');
+  
+  function sendMessage() {
+    const message = chatInput.value.trim();
+    if (message === '') return;
+    
+    // 创建用户消息
+    const userMessage = document.createElement('div');
+    userMessage.classList.add('message', 'user-message');
+    userMessage.textContent = message;
+    chatMessages.appendChild(userMessage);
+    
+    // 清空输入框
+    chatInput.value = '';
+    
+    // 滚动到底部
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    // 确保聊天界面高度适应内容
+    adjustChatHeight();
+    
+    // 保存用户消息到当前会话
+    saveMessageToHistory(currentSessionId, 'user', message);
+    
+    // 如果这是新会话的第一条消息，根据内容生成标题
+    if (currentSessionTitle === "新对话") {
+      currentSessionTitle = generateSessionTitle(message);
+      updateSessionList();
+    }
+    
+    // 获取当前的聊天历史记录
+    const chatHistory = JSON.parse(localStorage.getItem('chatHistory')) || {};
+    const currentChatHistory = chatHistory[currentSessionId];
+    
+    // 分析用户身份（卖家/买家）
+    const isSellerKeywords = ['出售', '卖', '处理', '清理', '库存', '积压', '批发', '出货', '供应', '有货', '闲置', '转让', '甩卖'];
+    const isBuyerKeywords = ['收', '要', '收购', '采购', '进货', '求购', '需要', '想买', '找货', '购买', '订购'];
+    
+    // 简单判断用户身份
+    const lowercaseMsg = message.toLowerCase();
+    const isSeller = isSellerKeywords.some(keyword => lowercaseMsg.includes(keyword)) || 
+                    /我.*[有卖供]/.test(lowercaseMsg) || 
+                    /我.*库存/.test(lowercaseMsg);
+    
+    const isBuyer = (!isSeller && (
+                    isBuyerKeywords.some(keyword => lowercaseMsg.includes(keyword)) || 
+                    /我.*[买要找]/.test(lowercaseMsg) || 
+                    /我.*需要/.test(lowercaseMsg)));
+    
+    // 基于用户消息更新对接进度
+    updateTrackingFromChat(message, isSeller, isBuyer);
+    
+    // 模拟系统回复
+    setTimeout(() => {
+      const systemMessage = document.createElement('div');
+      systemMessage.classList.add('message', 'system-message');
+      
+      // 添加缝纫针图标前缀
+      const needleIcon = document.createElement('span');
+      needleIcon.classList.add('needle-icon');
+      needleIcon.innerHTML = '🧵';
+      
+      const messageText = document.createElement('span');
+      const autoReply = getAutoReply(message);
+      messageText.innerHTML = autoReply;
+      
+      systemMessage.appendChild(needleIcon);
+      systemMessage.appendChild(messageText);
+      
+      chatMessages.appendChild(systemMessage);
+      
+      // 保存系统回复到当前会话
+      saveMessageToHistory(currentSessionId, 'system', autoReply);
+      
+      // 添加打字动画效果
+      addTypingAnimation(messageText);
+      
+      // 滚动到底部
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      
+      // 再次调整聊天界面高度
+      adjustChatHeight();
+      
+      // 基于系统回复再次更新对接进度
+      updateTrackingFromChat(autoReply);
+    }, 1000);
+  }
+  
+  // 生成唯一的会话ID
+  function generateSessionId() {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2);
+  }
+  
+  // 根据用户首条消息内容生成会话标题
+  function generateSessionTitle(message) {
+    // 提取消息的前10个字符作为标题，如果消息太短则全部使用
+    const titleText = message.length > 10 ? message.substring(0, 10) + '...' : message;
+    return titleText;
+  }
+  
+  // 保存消息到本地存储
+  function saveMessageToHistory(sessionId, sender, content) {
+    // 从本地存储获取已有历史记录
+    let chatHistory = JSON.parse(localStorage.getItem('chatHistory')) || {};
+    
+    // 如果会话不存在，则创建新会话
+    if (!chatHistory[sessionId]) {
+      chatHistory[sessionId] = {
+        id: sessionId,
+        title: currentSessionTitle,
+        date: new Date().toISOString(),
+        messages: []
+      };
+    }
+    
+    // 添加新消息
+    chatHistory[sessionId].messages.push({
+      sender: sender,
+      content: content,
+      timestamp: new Date().toISOString()
+    });
+    
+    // 更新最后活动时间
+    chatHistory[sessionId].lastActive = new Date().toISOString();
+    
+    // 更新会话标题（如果已生成）
+    if (currentSessionTitle !== "新对话") {
+      chatHistory[sessionId].title = currentSessionTitle;
+    }
+    
+    // 保存回本地存储
+    localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+    
+    // 更新当前会话ID到localStorage
+    localStorage.setItem('currentSessionId', sessionId);
+    
+    // 更新会话列表
+    updateSessionList();
+  }
+  
+  // 添加打字动画效果
+  function addTypingAnimation(element) {
+    const text = element.innerHTML;
+    element.innerHTML = '';
+    let i = 0;
+    
+    function typeWriter() {
+      if (i < text.length) {
+        element.innerHTML += text.charAt(i);
+        i++;
+        // 随机打字速度，让效果更自然
+        setTimeout(typeWriter, Math.random() * 10 + 20);
+      }
+    }
+    
+    // 考虑到文本较长且有HTML标签，这里简化不使用真实的打字效果
+    element.innerHTML = text;
+    element.style.opacity = '0';
+    setTimeout(() => {
+      element.style.transition = 'opacity 0.5s';
+      element.style.opacity = '1';
+    }, 100);
+  }
+  
+  // 初始化聊天历史
+  function initChatHistory(sidebar) {
+    // 确保历史会话标题已添加
+    if (!sidebar.querySelector('.sidebar-header')) {
+      const header = document.createElement('div');
+      header.classList.add('sidebar-header');
+      header.innerHTML = '历史会话<span class="current-time"></span>';
+      sidebar.appendChild(header);
+    }
+    
+    // 更新当前北京时间显示
+    updateCurrentTime();
+    
+    // 更新会话列表
+    updateSessionList();
+    
+    // 每秒更新一次时间
+    setInterval(updateCurrentTime, 1000);
+  }
+  
+  // 更新当前北京时间显示
+  function updateCurrentTime() {
+    const now = new Date();
+    now.setTime(now.getTime() + (8 * 60 * 60 * 1000)); // 调整为UTC+8
+    const hours = String(now.getUTCHours()).padStart(2, '0');
+    const minutes = String(now.getUTCMinutes()).padStart(2, '0');
+    const seconds = String(now.getUTCSeconds()).padStart(2, '0');
+    const currentTime = `${hours}:${minutes}:${seconds}`;
+    
+    const timeElement = chatSidebar.querySelector('.sidebar-header .current-time');
+    if (timeElement) {
+      timeElement.textContent = `北京时间 ${currentTime}`;
+    }
+  }
+  
+  // 格式化日期为更友好的格式
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    // 调整为北京时间
+    date.setTime(date.getTime() + (8 * 60 * 60 * 1000));
+    
+    const now = new Date();
+    now.setTime(now.getTime() + (8 * 60 * 60 * 1000));
+    
+    const today = new Date(now);
+    today.setUTCHours(0, 0, 0, 0);
+    
+    const yesterday = new Date(today);
+    yesterday.setUTCDate(yesterday.getUTCDate() - 1);
+    
+    // 检查是否是今天
+    if (date >= today) {
+      const hours = String(date.getUTCHours()).padStart(2, '0');
+      const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+      return `今天 ${hours}:${minutes}`;
+    }
+    
+    // 检查是否是昨天
+    if (date >= yesterday && date < today) {
+      return "昨天";
+    }
+    
+    // 一周内显示星期
+    const weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+    const diffDays = Math.floor((today - date) / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 7) {
+      return weekDays[date.getUTCDay()];
+    }
+    
+    // 更早的日期显示完整日期
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+  
+  // 更新会话列表
+  function updateSessionList() {
+    // 从本地存储获取历史记录
+    const chatHistory = JSON.parse(localStorage.getItem('chatHistory')) || {};
+    
+    // 获取所有会话并按最后活动时间排序
+    const sessions = Object.values(chatHistory).sort((a, b) => 
+      new Date(b.lastActive || b.date) - new Date(a.lastActive || a.date)
+    );
+    
+    // 清空已有的历史会话项目
+    chatSidebar.querySelectorAll('.session-item').forEach(item => item.remove());
+    
+    // 如果没有历史会话记录，添加新会话按钮
+    if (sessions.length === 0) {
+      const newChatButton = document.createElement('div');
+      newChatButton.classList.add('session-item', 'new-chat');
+      newChatButton.innerHTML = '<div class="session-title">开始新对话</div>';
+      
+      newChatButton.addEventListener('click', () => {
+        startNewSession();
+      });
+      
+      chatSidebar.appendChild(newChatButton);
+      return;
+    }
+    
+    // 添加新会话按钮
+    const newChatButton = document.createElement('div');
+    newChatButton.classList.add('session-item', 'new-chat');
+    newChatButton.innerHTML = '<div class="session-title">开始新对话</div>';
+    
+    newChatButton.addEventListener('click', () => {
+      startNewSession();
+    });
+    
+    chatSidebar.appendChild(newChatButton);
+    
+    // 添加历史会话
+    sessions.forEach(session => {
+      const sessionItem = document.createElement('div');
+      sessionItem.classList.add('session-item');
+      sessionItem.dataset.sessionId = session.id;
+      
+      if (session.id === currentSessionId) {
+        sessionItem.classList.add('active');
+      }
+      
+      const sessionTitle = document.createElement('div');
+      sessionTitle.classList.add('session-title');
+      sessionTitle.textContent = session.title || "无标题对话";
+      
+      const sessionDate = document.createElement('div');
+      sessionDate.classList.add('session-date');
+      
+      const formattedDate = formatDate(session.lastActive || session.date);
+      sessionDate.innerHTML = `<span class="date-icon">🕒</span> ${formattedDate}`;
+      
+      // 完整日期作为悬停提示
+      const fullDate = new Date(session.lastActive || session.date);
+      fullDate.setTime(fullDate.getTime() + (8 * 60 * 60 * 1000)); // 调整为北京时间
+      
+      const fullDateStr = `${fullDate.getUTCFullYear()}-${String(fullDate.getUTCMonth() + 1).padStart(2, '0')}-${String(fullDate.getUTCDate()).padStart(2, '0')} ${String(fullDate.getUTCHours()).padStart(2, '0')}:${String(fullDate.getUTCMinutes()).padStart(2, '0')}`;
+      sessionDate.title = fullDateStr;
+      
+      // 添加删除按钮
+      const deleteButton = document.createElement('span');
+      deleteButton.classList.add('delete-session');
+      deleteButton.innerHTML = '✕';
+      deleteButton.title = '删除对话';
+      deleteButton.onclick = (e) => {
+        e.stopPropagation(); // 阻止事件冒泡，避免触发会话点击事件
+        deleteSession(session.id);
+      };
+      
+      sessionItem.appendChild(sessionTitle);
+      sessionItem.appendChild(sessionDate);
+      sessionItem.appendChild(deleteButton);
+      
+      // 点击切换会话
+      sessionItem.addEventListener('click', () => {
+        loadSession(session.id);
+      });
+      
+      chatSidebar.appendChild(sessionItem);
+    });
+  }
+  
+  // 删除会话
+  function deleteSession(sessionId) {
+    if (confirm('确认删除这个对话记录吗？此操作无法撤销。')) {
+      // 从本地存储中获取会话数据
+      const chatHistory = JSON.parse(localStorage.getItem('chatHistory')) || {};
+      
+      // 删除指定会话
+      if (chatHistory[sessionId]) {
+        delete chatHistory[sessionId];
+        
+        // 保存更新后的会话数据
+        localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+        
+        // 如果删除的是当前会话，则开始新会话
+        if (sessionId === currentSessionId) {
+          startNewSession();
+        } else {
+          // 仅更新会话列表
+          updateSessionList();
+        }
+      }
+    }
+  }
+  
+  // 加载指定会话
+  function loadSession(sessionId) {
+    // 从本地存储获取会话数据
+    const chatHistory = JSON.parse(localStorage.getItem('chatHistory')) || {};
+    const session = chatHistory[sessionId];
+    
+    if (!session) {
+      console.error('会话不存在:', sessionId);
+      startNewSession(); // 如果会话不存在，创建新会话
+      return;
+    }
+    
+    // 更新当前会话ID
+    currentSessionId = sessionId;
+    localStorage.setItem('currentSessionId', currentSessionId);
+    
+    // 更新会话标题
+    currentSessionTitle = session.title || "无标题对话";
+    
+    // 更新会话列表中的激活状态
+    chatSidebar.querySelectorAll('.session-item').forEach(item => {
+      item.classList.remove('active');
+    });
+    
+    const activeItem = Array.from(chatSidebar.querySelectorAll('.session-item')).find(
+      item => item.dataset.sessionId === sessionId
+    );
+    
+    if (activeItem) {
+      activeItem.classList.add('active');
+    }
+    
+    // 清空当前消息
+    chatMessages.innerHTML = '';
+    
+    // 显示会话消息
+    session.messages.forEach(msg => {
+      const messageElement = document.createElement('div');
+      
+      if (msg.sender === 'user') {
+        messageElement.classList.add('message', 'user-message');
+        messageElement.textContent = msg.content;
+      } else {
+        messageElement.classList.add('message', 'system-message');
+        
+        const needleIcon = document.createElement('span');
+        needleIcon.classList.add('needle-icon');
+        needleIcon.innerHTML = '🧵';
+        
+        const messageText = document.createElement('span');
+        messageText.innerHTML = msg.content;
+        
+        messageElement.appendChild(needleIcon);
+        messageElement.appendChild(messageText);
+      }
+      
+      chatMessages.appendChild(messageElement);
+    });
+    
+    // 如果会话没有消息，添加欢迎消息
+    if (session.messages.length === 0) {
+      const systemMessage = document.createElement('div');
+      systemMessage.classList.add('message', 'system-message');
+      
+      const needleIcon = document.createElement('span');
+      needleIcon.classList.add('needle-icon');
+      needleIcon.innerHTML = '🧵';
+      
+      const messageText = document.createElement('span');
+      messageText.innerHTML = '欢迎来到Fashion Reborn服装改造艺术空间！我是您的顾问，有任何关于清理库存、收购库存，改造成衣或面料的问题都可以咨询我。如需直接联系，请添加微信：<strong>JJ1598929032</strong>';
+      
+      systemMessage.appendChild(needleIcon);
+      systemMessage.appendChild(messageText);
+      
+      chatMessages.appendChild(systemMessage);
+      
+      // 保存欢迎消息到历史记录
+      saveMessageToHistory(sessionId, 'system', messageText.innerHTML);
+    }
+    
+    // 滚动到底部
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    // 调整高度
+    adjustChatHeight();
+  }
+  
+  // 开始新会话
+  function startNewSession() {
+    // 生成新的会话ID
+    currentSessionId = generateSessionId();
+    localStorage.setItem('currentSessionId', currentSessionId);
+    
+    currentSessionTitle = "新对话";
+    
+    // 清空消息区域
+    chatMessages.innerHTML = '';
+    
+    // 添加默认欢迎消息
+    const systemMessage = document.createElement('div');
+    systemMessage.classList.add('message', 'system-message');
+    
+    const needleIcon = document.createElement('span');
+    needleIcon.classList.add('needle-icon');
+    needleIcon.innerHTML = '🧵';
+    
+    const messageText = document.createElement('span');
+    messageText.innerHTML = '欢迎来到Fashion Reborn服装改造艺术空间！我是您的顾问，有任何关于清理库存、收购库存，改造成衣或面料的问题都可以咨询我。如需直接联系，请添加微信：<strong>JJ1598929032</strong>';
+    
+    systemMessage.appendChild(needleIcon);
+    systemMessage.appendChild(messageText);
+    
+    chatMessages.appendChild(systemMessage);
+    
+    // 保存欢迎消息到历史记录
+    saveMessageToHistory(currentSessionId, 'system', messageText.innerHTML);
+    
+    // 更新会话列表
+    updateSessionList();
+    
+    // 滚动到底部
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+  
+  // 调整聊天界面高度以适应内容
+  function adjustChatHeight() {
+    // 确保对话框内容完全显示
+    chatMessages.style.maxHeight = '520px'; // 保持最大高度限制
+    
+    // 确保整个聊天界面不遮挡对接进度面板
+    const trackingPanel = document.querySelector('.tracking-panel');
+    if (trackingPanel) {
+      const chatBottom = chatInterface.getBoundingClientRect().bottom;
+      const trackingTop = trackingPanel.getBoundingClientRect().top;
+      
+      // 如果聊天界面底部超出跟踪面板顶部，增加上边距
+      if (chatBottom > trackingTop) {
+        const currentMargin = parseInt(getComputedStyle(trackingPanel).marginTop) || 0;
+        trackingPanel.style.marginTop = (currentMargin + (chatBottom - trackingTop) + 20) + 'px';
+      }
+    }
+    
+    // 为消息添加动画效果
+    const messages = document.querySelectorAll('.message');
+    messages.forEach((message, index) => {
+      if (!message.style.animationDelay) {
+        message.style.animationDelay = `${index * 0.1}s`;
+      }
+    });
+  }
+  
+  sendButton.addEventListener('click', sendMessage);
+  
+  chatInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      sendMessage();
+    }
+  });
+  
+  // 添加输入时的动态效果
+  chatInput.addEventListener('focus', function() {
+    this.parentElement.classList.add('input-active');
+  });
+  
+  chatInput.addEventListener('blur', function() {
+    this.parentElement.classList.remove('input-active');
+  });
+  
+  // 初始调整高度
+  adjustChatHeight();
+  
+  // 监听窗口大小变化，重新调整高度
+  window.addEventListener('resize', adjustChatHeight);
+  
+  // 简单的自动回复系统
+  function getAutoReply(message) {
+    const lowercaseMsg = message.toLowerCase();
+    const wechatContact = '<strong>JJ1598929032</strong>';
+    
+    // 获取当前会话的历史消息，用于上下文理解
+    const chatHistory = JSON.parse(localStorage.getItem('chatHistory')) || {};
+    const sessionMessages = chatHistory[currentSessionId]?.messages || [];
+    
+    // 提取最近的对话历史（最多取最近5条消息）
+    const recentMessages = sessionMessages.slice(-10);
+    
+    // 分析近期对话主题和上下文
+    let conversationContext = '';
+    let previousTopics = {
+      fabric: false,     // 是否讨论过面料
+      clothing: false,   // 是否讨论过服装
+      price: false,      // 是否讨论过价格
+      contact: false,    // 是否询问过联系方式
+      seller: false,     // 用户是否是卖家
+      buyer: false       // 用户是否是买家
+    };
+    
+    // 分析近期对话内容，识别主题
+    recentMessages.forEach(msg => {
+      const content = msg.content.toLowerCase();
+      
+      // 检查是否讨论过面料相关
+      if (content.includes('面料') || content.includes('布料') || content.includes('布')) {
+        previousTopics.fabric = true;
+        conversationContext += '面料相关 ';
+      }
+      
+      // 检查是否讨论过服装相关
+      if (content.includes('衣服') || content.includes('服装') || content.includes('裤子') || content.includes('裙子')) {
+        previousTopics.clothing = true;
+        conversationContext += '服装相关 ';
+      }
+      
+      // 检查是否讨论过价格
+      if (content.includes('价格') || content.includes('多少钱') || content.includes('费用')) {
+        previousTopics.price = true;
+        conversationContext += '价格相关 ';
+      }
+      
+      // 检查是否询问过联系方式
+      if (content.includes('微信') || content.includes('联系') || content.includes('电话')) {
+        previousTopics.contact = true;
+        conversationContext += '联系方式 ';
+      }
+      
+      // 检查是否是卖家
+      if (content.includes('出售') || content.includes('卖') || content.includes('清理')) {
+        previousTopics.seller = true;
+        conversationContext += '卖家身份 ';
+      }
+      
+      // 检查是否是买家
+      if (content.includes('购买') || content.includes('买') || content.includes('需要')) {
+        previousTopics.buyer = true;
+        conversationContext += '买家身份 ';
+      }
+    });
+    
+    // 联系方式关键词
+    const contactKeywords = ['微信', '电话', '联系', 'vx', 'wx', '加', '沟通', '咨询', '对接', '合作', '怎么加', '怎么联系', '联系方式', '加你'];
+    
+    // 识别用户身份（卖家/买家）
+    const isSellerKeywords = ['出售', '卖', '处理', '清理', '库存', '积压', '批发', '出货', '供应', '有货', '闲置', '转让', '甩卖', '过季', '多余', '清仓', '出手', '代发'];
+    const isBuyerKeywords = ['收', '要', '收购', '采购', '进货', '求购', '需要', '想买', '找货', '购买', '订购', '拿货', '买家', '采购商', '寻找', '询价', '想要', '哪里有'];
+    
+    // 检查是否为卖家 - 增加对更明确表述的识别
+    const isSeller = isSellerKeywords.some(keyword => lowercaseMsg.includes(keyword)) || 
+                    previousTopics.seller || 
+                    /我.*[有卖供]/.test(lowercaseMsg) || 
+                    /我.*库存/.test(lowercaseMsg) ||
+                    /我.*清理/.test(lowercaseMsg);
+    
+    // 检查是否为买家 - 增加对更明确表述的识别
+    const isBuyer = (!isSeller && (
+                    isBuyerKeywords.some(keyword => lowercaseMsg.includes(keyword)) || 
+                    previousTopics.buyer || 
+                    /我.*[买要找]/.test(lowercaseMsg) || 
+                    /我.*需要/.test(lowercaseMsg) ||
+                    /我.*购买/.test(lowercaseMsg)));
+    
+    // 更新用户角色到上下文记忆
+    if (isSeller && !previousTopics.seller) {
+      previousTopics.seller = true;
+      previousTopics.buyer = false; // 一个用户通常不会同时是买家和卖家
+      
+      // 保存更新后的上下文到会话历史
+      if (chatHistory[currentSessionId]) {
+        chatHistory[currentSessionId].userContext = {
+          ...chatHistory[currentSessionId].userContext,
+          isSeller: true,
+          isBuyer: false
+        };
+        localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+      }
+    } else if (isBuyer && !previousTopics.buyer) {
+      previousTopics.buyer = true;
+      previousTopics.seller = false; // 一个用户通常不会同时是买家和卖家
+      
+      // 保存更新后的上下文到会话历史
+      if (chatHistory[currentSessionId]) {
+        chatHistory[currentSessionId].userContext = {
+          ...chatHistory[currentSessionId].userContext,
+          isBuyer: true,
+          isSeller: false
+        };
+        localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+      }
+    }
+    
+    // 识别具体需求类型 - 更详细的分类
+    let userNeeds = {
+      price: lowercaseMsg.includes('价格') || lowercaseMsg.includes('多少钱') || lowercaseMsg.includes('报价') || previousTopics.price,
+      quantity: /[0-9]+.*[件条米]/.test(lowercaseMsg) || lowercaseMsg.includes('数量') || lowercaseMsg.includes('批量'),
+      quality: lowercaseMsg.includes('品质') || lowercaseMsg.includes('质量') || lowercaseMsg.includes('等级') || lowercaseMsg.includes('好坏'),
+      delivery: lowercaseMsg.includes('发货') || lowercaseMsg.includes('物流') || lowercaseMsg.includes('快递') || lowercaseMsg.includes('运费'),
+      payment: lowercaseMsg.includes('付款') || lowercaseMsg.includes('支付') || lowercaseMsg.includes('结算') || lowercaseMsg.includes('转账'),
+      sample: lowercaseMsg.includes('样品') || lowercaseMsg.includes('样板') || lowercaseMsg.includes('打样') || lowercaseMsg.includes('看板')
+    };
+    
+    // 提取询问的具体产品类型以便提供更精准回复
+    let specificProductType = '';
+    
+    // 根据关键词提取具体产品
+    if (lowercaseMsg.includes('牛仔')) {
+      specificProductType = '牛仔';
+    } else if (lowercaseMsg.includes('丝绸') || lowercaseMsg.includes('丝质')) {
+      specificProductType = '丝绸';
+    } else if (lowercaseMsg.includes('棉麻') || lowercaseMsg.includes('亚麻')) {
+      specificProductType = '棉麻';
+    } else if (lowercaseMsg.includes('羊毛') || lowercaseMsg.includes('毛呢')) {
+      specificProductType = '羊毛';
+    }
+    
+    // 从最近的消息中尝试提取产品类型（如果当前消息没有明确提及）
+    if (!specificProductType && recentMessages.length > 0) {
+      for (let i = recentMessages.length - 1; i >= 0; i--) {
+        const content = recentMessages[i].content.toLowerCase();
+        if (content.includes('牛仔')) {
+          specificProductType = '牛仔';
+          break;
+        } else if (content.includes('丝绸') || content.includes('丝质')) {
+          specificProductType = '丝绸';
+          break;
+        } else if (content.includes('棉麻') || content.includes('亚麻')) {
+          specificProductType = '棉麻';
+          break;
+        } else if (content.includes('羊毛') || content.includes('毛呢')) {
+          specificProductType = '羊毛';
+          break;
+        }
+      }
+    }
+    
+    // 识别是否是在询问更多详情的跟进问题
+    const isDetailFollowup = /更多|详细|具体|怎么样|哪些|什么|如何|能否/.test(lowercaseMsg);
+    
+    // 添加关键变量：定义服装查询和面料查询识别逻辑
+    // 服装相关关键词
+    const clothingKeywords = ['衣服', '服装', '裤子', '裙子', '上衣', '外套', '夹克', '大衣', '卫衣', '毛衣', '衬衫', '内衣', 'T恤', '西装', '童装', '连衣裙', '风衣', '袜子', '帽子', '服饰'];
+    
+    // 明确的服装短语组合
+    const explicitClothingPhrases = [
+      '牛仔裤', '牛仔夹克', '牛仔外套', '牛仔衬衫', '牛仔裙', 
+      '丝绸衬衫', '丝绸连衣裙', '丝绸睡衣', '丝绸裙',
+      '羊毛衫', '羊毛外套', '毛呢大衣', '羊毛裤',
+      '棉麻衬衫', '棉麻裤', '亚麻裙', '棉麻套装'
+    ];
+    
+    // 面料相关关键词
+    const fabricKeywords = ['面料', '布料', '布', '纺织', '布匹', '材质', '织物', '原料', '布艺', '绸缎', '皮料', '人造革', '纱'];
+    
+    // 明确的面料短语组合
+    const explicitFabricPhrases = [
+      '牛仔布', '牛仔面料', 
+      '丝绸面料', '真丝布料',
+      '羊毛面料', '毛呢布料',
+      '棉麻面料', '亚麻布料'
+    ];
+    
+    // 判断是否是服装查询 - 优先考虑明确的服装产品关键词，并排除明确的面料提及
+    const isClothingQuery = (
+      (clothingKeywords.some(keyword => lowercaseMsg.includes(keyword)) && 
+      !fabricKeywords.some(keyword => lowercaseMsg.includes(keyword))) || 
+      previousTopics.clothing
+    );
+    
+    // 判断是否包含明确的服装短语 - 这些组合通常明确指向成品服装
+    const hasExplicitClothingPhrase = explicitClothingPhrases.some(phrase => lowercaseMsg.includes(phrase));
+    
+    // 判断是否是面料查询 - 优先考虑明确的面料关键词 
+    const isFabricQuery = (
+      (fabricKeywords.some(keyword => lowercaseMsg.includes(keyword)) &&
+      !hasExplicitClothingPhrase) ||
+      previousTopics.fabric
+    );
+    
+    // 判断是否包含明确的面料短语 - 这些组合通常明确指向面料而非成品
+    const hasExplicitFabricPhrase = explicitFabricPhrases.some(phrase => lowercaseMsg.includes(phrase));
+    
+    // 条件判断优先级重排，确保成衣查询优先
+    if (contactKeywords.some(keyword => lowercaseMsg.includes(keyword)) || previousTopics.contact) {
+      return `感谢您的咨询！为了给您提供更高效的服务，建议您添加我们的专属客服微信：${wechatContact}<br><br>
+      通过微信，我们可以：<br>
+      1. 发送更多${previousTopics.fabric ? '面料' : previousTopics.clothing ? '服装' : '面料/服装'}实拍图片和视频<br>
+      2. 提供精确的库存数量和价格信息<br>
+      3. 分享更多成功案例和改造方案<br>
+      4. 针对您的具体需求提供一对一服务<br><br>
+      ${isSeller ? 
+        `作为卖家，我们可以帮您：<br>
+        - 对接合适的买家渠道<br>
+        - 提供专业的库存评估<br>
+        - 制定个性化的销售方案<br>`
+        : 
+        isBuyer ? 
+        `作为买家，我们可以为您：<br>
+        - 匹配最适合的产品资源<br>
+        - 提供样品和实物对比<br>
+        - 协助制定采购计划<br>`
+        : 
+        '无论您是想清理库存的卖家，还是寻找货源的买家，我们都能为您提供专业支持。'}<br><br>
+      我们的客服团队会在5分钟内回复您的消息，期待与您的进一步沟通！`;
+    }
+    // 买家对成衣的查询
+    else if ((isBuyer && isClothingQuery) || (isBuyer && hasExplicitClothingPhrase)) {
+      if (userNeeds.price) {
+        return `作为买家，您关心的${specificProductType ? specificProductType : ''}服装价格信息如下：<br><br>
+        ${specificProductType === '牛仔' ? 
+          `牛仔服装价格参考：<br>
+          - 牛仔裤：80-350元/条（取决于工艺和面料质量）<br>
+          - 牛仔夹克：120-500元/件<br>
+          - 牛仔衬衫：90-300元/件<br>
+          - 牛仔裙装：70-280元/条<br><br>` 
+          : 
+          specificProductType === '丝绸' ? 
+          `丝绸服装价格参考：<br>
+          - 丝绸衬衫：180-600元/件（取决于真丝含量）<br>
+          - 丝绸连衣裙：250-1200元/件<br>
+          - 丝绸睡衣套装：200-800元/套<br>
+          - 丝绸围巾/丝巾：80-400元/条<br><br>` 
+          : 
+          `各类服装价格参考：<br>
+          - 休闲T恤：30-150元/件<br>
+          - 衬衫/上衣：60-250元/件<br>
+          - 裤装/裙装：80-300元/件<br>
+          - 外套/大衣：150-800元/件<br><br>`
+        }
+        批量采购可享受以下优惠：<br>
+        - 10件以上：95折<br>
+        - 30件以上：9折<br>
+        - 100件以上：85折<br>
+        - 500件以上：8折起<br><br>
+        为获取准确报价和当前促销活动，请添加微信：${wechatContact}`;
+      } 
+      else if (userNeeds.quantity) {
+        return `关于${specificProductType ? specificProductType : ''}服装的采购数量：<br><br>
+        我们可以满足不同规模的采购需求：<br>
+        - 小批量：5-30件（适合精品店和小型零售商）<br>
+        - 中等批量：30-200件（适合中型零售商）<br>
+        - 大批量：200件以上（适合大型分销商）<br><br>
+        ${specificProductType ? `我们目前${specificProductType}服装库存充足，可以满足紧急订单需求。` : '大部分款式都有现货，可立即发货。'}<br><br>
+        针对不同数量级别，我们有相应的价格梯度和服务方案。<br><br>
+        请添加微信：${wechatContact} 详细沟通您的具体采购需求和预期数量。`;
+      }
+      else if (userNeeds.quality) {
+        return `关于${specificProductType ? specificProductType : ''}服装的品质：<br><br>
+        我们提供多个品质等级的服装：<br>
+        - 精品级：采用高品质面料，精工细作，适合高端市场<br>
+        - 商务级：品质稳定，做工规范，适合中高端零售<br>
+        - 经济级：性价比高，适合大众市场和促销活动<br><br>
+        ${specificProductType === '牛仔' ? 
+          `我们的牛仔服装采用多种牛仔面料，从轻薄8安的到厚重16安的均有提供，洗水工艺包括：原色、水洗、石洗、漂白、做旧等多种效果。` 
+          : 
+          specificProductType === '丝绸' ? 
+          `我们的丝绸服装大多采用高品质天然桑蚕丝，真丝含量在90%以上，手感顺滑，垂坠感好，色牢度高。` 
+          : 
+          `所有服装在出厂前都经过严格的质检，确保做工和材质符合标准。`
+        }<br><br>
+        欢迎添加微信：${wechatContact} 了解更多品质细节或申请样品。`;
+      }
+      else {
+        return `您好！作为买家，我们为您提供丰富的${specificProductType ? specificProductType : ''}服装库存资源：<br><br>
+        ${specificProductType ? 
+          `我们的${specificProductType}服装系列包括：<br>
+          ${specificProductType === '牛仔' ? 
+            `- 多款式牛仔裤（直筒、锥形、阔腿等）<br>
+            - 牛仔外套和夹克（基础款和时尚款）<br>
+            - 牛仔衬衫和连衣裙<br>
+            - 牛仔配饰（帽子、包袋等）<br>` 
+            : 
+            specificProductType === '丝绸' ? 
+            `- 丝绸衬衫和上衣（多色可选）<br>
+            - 丝绸连衣裙和半身裙<br>
+            - 丝绸睡衣和家居服<br>
+            - 丝绸围巾和领带<br>` 
+            : 
+            `- ${specificProductType}上衣和外套<br>
+            - ${specificProductType}裤装和裙装<br>
+            - ${specificProductType}配饰和其他品类<br>`
+          }`
+          : 
+          `我们提供各类服装资源：<br>
+          - 各大品牌尾货和下架款<br>
+          - 工厂高质量余货<br>
+          - 设计师原创系列<br>
+          - 各类季节性换季服装<br>`
+        }<br>
+        我们的优势：<br>
+        - 品类齐全，款式多样<br>
+        - 价格透明，梯度合理<br>
+        - 质量保证，支持退换<br>
+        - 发货迅速，物流高效<br><br>
+        请问您需要哪种类型、风格和尺码的服装？我们可以为您精准匹配库存。<br><br>
+        为查看最新款式和库存状态，请添加微信：${wechatContact}`;
+      }
+    }
+    // 卖家对成衣的查询
+    else if ((isSeller && isClothingQuery) || (isSeller && hasExplicitClothingPhrase)) {
+      if (userNeeds.price) {
+        return `作为卖家，关于您出售的${specificProductType ? specificProductType : ''}服装，我们可提供以下价格参考：<br><br>
+        根据目前市场行情，我们的收购价格区间：<br>
+        ${specificProductType === '牛仔' ? 
+          `- 牛仔裤：40-180元/条<br>
+          - 牛仔外套：60-250元/件<br>
+          - 牛仔衬衫：45-150元/件<br>` 
+          : 
+          specificProductType === '丝绸' ? 
+          `- 丝绸衬衫：90-300元/件<br>
+          - 丝绸连衣裙：120-600元/件<br>
+          - 丝绸家居服：100-400元/套<br>` 
+          : 
+          `- 上衣/衬衫：30-150元/件<br>
+          - 裤装/裙装：40-200元/条<br>
+          - 外套/大衣：70-400元/件<br>`
+        }<br>
+        实际收购价格取决于：<br>
+        - 服装品质和品牌<br>
+        - 款式新旧和市场需求<br>
+        - 数量和批次一致性<br>
+        - 是否有吊牌和包装<br><br>
+        我们提供三种合作模式：<br>
+        1. 直接收购：即时支付<br>
+        2. 代销模式：抽取10-20%佣金<br>
+        3. 定向对接：连接您与指定买家<br><br>
+        请添加微信：${wechatContact} 发送服装照片，获取精准评估和报价。`;
+      }
+      else if (userNeeds.quantity || userNeeds.delivery) {
+        return `关于您要出售的${specificProductType ? specificProductType : ''}服装数量和发货：<br><br>
+        我们接受的最低起售量：<br>
+        - 精品类：10件起<br>
+        - 普通类：30件起<br>
+        - 尾货类：50件起<br><br>
+        发货和物流安排：<br>
+        - 我们可安排物流上门取货（数量较大时）<br>
+        - 可提供打包材料和标准<br>
+        - 支持第三方物流公司对接<br><br>
+        ${specificProductType ? `${specificProductType}服装目前市场需求较大，可优先安排收购。` : '不同类型服装的处理周期可能不同，详情请咨询客服。'}<br><br>
+        请添加微信：${wechatContact} 详细沟通您的库存数量和物流安排。`;
+      }
+      else {
+        return `您好！作为卖家，感谢您考虑通过我们平台处理${specificProductType ? specificProductType : ''}服装库存。<br><br>
+        我们平台为卖家提供的服务：<br>
+        - 多种服装库存处理方案<br>
+        - 专业库存评估和定价建议<br>
+        - 高效对接买家资源和销售渠道<br>
+        - 安全便捷的交易流程<br><br>
+        ${specificProductType ? 
+          `目前市场对${specificProductType}服装的需求情况：<br>
+          ${specificProductType === '牛仔' ? 
+            `- 牛仔服装需求稳定，四季都有市场<br>
+            - 中高端牛仔产品特别受欢迎<br>
+            - 做旧和复古风格最受追捧<br>` 
+            : 
+            specificProductType === '丝绸' ? 
+            `- 丝绸服装市场需求正在增长<br>
+            - 高品质真丝产品供不应求<br>
+            - 家居服和睡衣类丝绸产品最热门<br>` 
+            : 
+            `- ${specificProductType}服装目前市场反应良好<br>
+            - 品质稳定的产品更容易对接<br>
+            - 季节性产品需考虑时机<br>`
+          }`
+          : 
+          `我们特别需要以下类型的服装库存：<br>
+          - 品质稳定的基础款服装<br>
+          - 知名品牌的尾货和下架款<br>
+          - 独特设计的小众服装系列<br>`
+        }<br>
+        请问您需要处理的是哪种服装？大约有多少数量？<br><br>
+        为高效对接，请添加微信：${wechatContact} 分享更多库存详情，我们会为您提供专业评估和最佳处理方案。`;
+      }
+    }
+    // 买家对面料的查询
+    else if ((isBuyer && isFabricQuery) || (isBuyer && hasExplicitFabricPhrase)) {
+      if (userNeeds.price) {
+        return `作为买家，您关心的${specificProductType ? specificProductType : ''}面料价格信息如下：<br><br>
+        ${specificProductType === '牛仔' ? 
+          `牛仔面料价格参考（每米）：<br>
+          - 轻薄牛仔（5-8盎司）：30-80元<br>
+          - 中等重量（9-12盎司）：50-120元<br>
+          - 重磅牛仔（13-16盎司）：70-150元<br>
+          - 弹力牛仔（带氨纶）：加价10-30元<br><br>` 
+          : 
+          specificProductType === '丝绸' ? 
+          `丝绸面料价格参考（每米）：<br>
+          - 真丝绸缎：150-400元（根据桑蚕丝含量）<br>
+          - 丝棉混纺：80-200元<br>
+          - 人造丝绸：40-100元<br>
+          - 印花丝绸：加价30-100元<br><br>` 
+          : 
+          `各类面料价格参考（每米）：<br>
+          - 普通棉布：20-60元<br>
+          - 高品质棉麻：50-150元<br>
+          - 羊毛呢料：80-300元<br>
+          - 功能性面料：60-200元<br><br>`
+        }
+        批量购买优惠：<br>
+        - 30米以上：95折<br>
+        - 100米以上：9折<br>
+        - 300米以上：85折<br>
+        - 1000米以上：请联系客服洽谈更优惠价格<br><br>
+        为获取最新价格和库存情况，请添加微信：${wechatContact}`;
+      }
+      else if (userNeeds.quantity) {
+        return `关于${specificProductType ? specificProductType : ''}面料的采购数量：<br><br>
+        我们的面料起订量：<br>
+        - 库存现货：最低3米起售<br>
+        - 大货批发：30米起订<br>
+        - 定制面料：100米起订<br><br>
+        ${specificProductType ? 
+          `我们目前${specificProductType}面料库存充足，多种规格可选：<br>
+          ${specificProductType === '牛仔' ? 
+            `- 多种重量和弹性选择<br>
+            - 多种洗水效果备选<br>
+            - 提供色卡和样品`
+            : 
+            specificProductType === '丝绸' ? 
+            `- 多种真丝含量等级<br>
+            - 多种织法和风格<br>
+            - 纯色和印花均有库存`
+            : 
+            `- 多种规格和用途<br>
+            - 适合各类服装制作<br>
+            - 有现货可立即发出`
+          }`
+          : 
+          `大部分面料都有充足库存，可满足紧急订单需求。`
+        }<br><br>
+        请添加微信：${wechatContact} 详细沟通您的具体需求和预计用量。`;
+      }
+      else if (userNeeds.quality) {
+        return `关于${specificProductType ? specificProductType : ''}面料的品质：<br><br>
+        我们提供多个品质等级的面料：<br>
+        - 高端精品：一线品牌用料标准，适合高端定制<br>
+        - 商业优选：品质稳定，适合中高端成衣生产<br>
+        - 实用经济：性价比高，适合大众市场产品<br><br>
+        ${specificProductType === '牛仔' ? 
+          `我们的牛仔面料采用优质棉花，经过严格的织造和染色工艺，色牢度高，手感好，耐用性强。不同重量和弹性适合不同用途，从轻薄夏装到厚重外套均可制作。` 
+          : 
+          specificProductType === '丝绸' ? 
+          `我们的丝绸面料分为天然桑蚕丝和混纺两大类。天然桑蚕丝光泽自然，手感顺滑，透气性好；混纺丝绸则增加了耐用性和易打理性，适合日常穿着服装。` 
+          : 
+          `所有面料在入库前都经过严格的质检，确保织造密度、色牢度、强力等指标符合标准。`
+        }<br><br>
+        欢迎添加微信：${wechatContact} 申请样品或面料测试报告。`;
+      }
+      else {
+        return `您好！作为买家，我们为您提供丰富的${specificProductType ? specificProductType : ''}面料库存资源：<br><br>
+        ${specificProductType ? 
+          `我们的${specificProductType}面料系列包括：<br>
+          ${specificProductType === '牛仔' ? 
+            `- 多种重量牛仔布（轻薄、中等、重磅）<br>
+            - 多种成分配比（全棉、弹力、混纺）<br>
+            - 多种洗水效果（原色、水洗、做旧等）<br>
+            - 特色牛仔（扎染、印花、提花等）<br>` 
+            : 
+            specificProductType === '丝绸' ? 
+            `- 真丝绸缎（高档服装面料）<br>
+            - 乔其纱和双绉（轻薄透气）<br>
+            - 斜纹丝绸（耐用挺括）<br>
+            - 印花丝绸（时尚独特）<br>` 
+            : 
+            `- 各种规格的${specificProductType}面料<br>
+            - 适合不同季节和用途<br>
+            - 多种颜色和花型可选<br>`
+          }`
+          : 
+          `我们提供各类面料资源：<br>
+          - 各类天然面料（棉、麻、丝、毛等）<br>
+          - 高品质混纺面料（舒适耐用）<br>
+          - 时尚印花和提花面料（独特设计）<br>
+          - 功能性面料（防水、透气、弹力等）<br>`
+        }<br>
+        我们的优势：<br>
+        - 品种齐全，规格多样<br>
+        - 价格合理，来源透明<br>
+        - 质量稳定，检测严格<br>
+        - 小单起售，方便试用<br><br>
+        请问您需要哪种类型的面料？用于什么项目？需要多少用量？<br><br>
+        为查看面料实物和详细规格，请添加微信：${wechatContact}`;
+      }
+    }
+    // 卖家对面料的查询
+    else if ((isSeller && isFabricQuery) || (isSeller && hasExplicitFabricPhrase)) {
+      if (userNeeds.price) {
+        return `作为卖家，关于您出售的${specificProductType ? specificProductType : ''}面料，我们可提供以下价格参考：<br><br>
+        根据目前市场行情，我们的收购价格区间：<br>
+        ${specificProductType === '牛仔' ? 
+          `- 轻薄牛仔（5-8盎司）：30-80元<br>
+          - 中等重量（9-12盎司）：50-120元<br>
+          - 重磅牛仔（13-16盎司）：70-150元<br>
+          - 弹力牛仔（带氨纶）：加价10-30元<br><br>` 
+          : 
+          specificProductType === '丝绸' ? 
+          `- 真丝绸缎：150-400元（根据桑蚕丝含量）<br>
+          - 丝棉混纺：80-200元<br>
+          - 人造丝绸：40-100元<br>
+          - 印花丝绸：加价30-100元<br><br>` 
+          : 
+          `- 普通棉布：20-60元<br>
+          - 高品质棉麻：50-150元<br>
+          - 羊毛呢料：80-300元<br>
+          - 功能性面料：60-200元<br><br>`
+        }
+        批量购买优惠：<br>
+        - 30米以上：95折<br>
+        - 100米以上：9折<br>
+        - 300米以上：85折<br>
+        - 1000米以上：请联系客服洽谈更优惠价格<br><br>
+        为获取最新价格和库存情况，请添加微信：${wechatContact}`;
+      }
+      else if (userNeeds.quantity) {
+        return `关于您要出售的${specificProductType ? specificProductType : ''}面料数量：<br><br>
+        我们的面料起订量：<br>
+        - 库存现货：最低3米起售<br>
+        - 大货批发：30米起订<br>
+        - 定制面料：100米起订<br><br>
+        ${specificProductType ? 
+          `我们目前${specificProductType}面料库存充足，多种规格可选：<br>
+          ${specificProductType === '牛仔' ? 
+            `- 多种重量和弹性选择<br>
+            - 多种洗水效果备选<br>
+            - 提供色卡和样品`
+            : 
+            specificProductType === '丝绸' ? 
+            `- 多种真丝含量等级<br>
+            - 多种织法和风格<br>
+            - 纯色和印花均有库存`
+            : 
+            `- 多种规格和用途<br>
+            - 适合各类服装制作<br>
+            - 有现货可立即发出`
+          }`
+          : 
+          `大部分面料都有充足库存，可满足紧急订单需求。`
+        }<br><br>
+        请添加微信：${wechatContact} 详细沟通您的具体需求和预计用量。`;
+      }
+      else if (userNeeds.quality) {
+        return `关于您出售的${specificProductType ? specificProductType : ''}面料的品质：<br><br>
+        我们提供多个品质等级的面料：<br>
+        - 高端精品：一线品牌用料标准，适合高端定制<br>
+        - 商业优选：品质稳定，适合中高端成衣生产<br>
+        - 实用经济：性价比高，适合大众市场产品<br><br>
+        ${specificProductType === '牛仔' ? 
+          `我们的牛仔面料采用优质棉花，经过严格的织造和染色工艺，色牢度高，手感好，耐用性强。不同重量和弹性适合不同用途，从轻薄夏装到厚重外套均可制作。` 
+          : 
+          specificProductType === '丝绸' ? 
+          `我们的丝绸面料分为天然桑蚕丝和混纺两大类。天然桑蚕丝光泽自然，手感顺滑，透气性好；混纺丝绸则增加了耐用性和易打理性，适合日常穿着服装。` 
+          : 
+          `所有面料在入库前都经过严格的质检，确保织造密度、色牢度、强力等指标符合标准。`
+        }<br><br>
+        欢迎添加微信：${wechatContact} 申请样品或面料测试报告。`;
+      }
+      else {
+        return `您好！作为卖家，我们为您提供丰富的${specificProductType ? specificProductType : ''}面料库存资源：<br><br>
+        ${specificProductType ? 
+          `我们的${specificProductType}面料系列包括：<br>
+          ${specificProductType === '牛仔' ? 
+            `- 多种重量牛仔布（轻薄、中等、重磅）<br>
+            - 多种成分配比（全棉、弹力、混纺）<br>
+            - 多种洗水效果（原色、水洗、做旧等）<br>
+            - 特色牛仔（扎染、印花、提花等）<br>` 
+            : 
+            specificProductType === '丝绸' ? 
+            `- 真丝绸缎（高档服装面料）<br>
+            - 乔其纱和双绉（轻薄透气）<br>
+            - 斜纹丝绸（耐用挺括）<br>
+            - 印花丝绸（时尚独特）<br>` 
+            : 
+            `- 各种规格的${specificProductType}面料<br>
+            - 适合不同季节和用途<br>
+            - 多种颜色和花型可选<br>`
+          }`
+          : 
+          `我们提供各类面料资源：<br>
+          - 各类天然面料（棉、麻、丝、毛等）<br>
+          - 高品质混纺面料（舒适耐用）<br>
+          - 时尚印花和提花面料（独特设计）<br>
+          - 功能性面料（防水、透气、弹力等）<br>`
+        }<br>
+        我们的优势：<br>
+        - 品种齐全，规格多样<br>
+        - 价格合理，来源透明<br>
+        - 质量稳定，检测严格<br>
+        - 小单起售，方便试用<br><br>
+        请问您需要哪种类型的面料？用于什么项目？需要多少用量？<br><br>
+        为查看面料实物和详细规格，请添加微信：${wechatContact}`;
+      }
+    }
+    // 默认回复，区分卖家/买家
+    else {
+      if (isSeller) {
+        return `${previousTopics.seller ? '感谢您继续关注我们的平台服务' : '您好！感谢您考虑通过我们平台处理库存。'}<br><br>
+        我们的库存对接系统可以帮助卖家：<br>
+        1. 高效清理各类面料和服装库存<br>
+        2. 对接优质买家资源和销售渠道<br>
+        3. 提供专业的库存评估和定价建议<br>
+        4. 协助处理季节性和断码库存问题<br><br>
+        我们目前特别需要以下类型的库存：<br>
+        - 高品质天然面料（棉、麻、丝、毛等）<br>
+        - 时尚休闲服装和商务正装<br>
+        - 功能性面料和运动休闲装<br><br>
+        请问您需要处理哪类库存？请添加微信：${wechatContact} 发送详细信息，我们会为您提供最佳对接方案。`;
+      } else {
+        return `${previousTopics.buyer ? '感谢您继续咨询我们的服务' : '感谢您的咨询！'}我们的库存对接系统可以帮您：<br><br>
+        1. 匹配各类面料库存（棉、麻、丝、毛、化纤等）<br>
+        2. 对接优质服装库存（休闲装、正装、特色服装等）<br>
+        3. 提供服装改造专业建议和方案<br>
+        4. 连接设计师和供应商资源<br><br>
+        请问您需要了解哪种面料或服装的信息？是寻找特定类型的产品还是多种选择？<br><br>
+        为获取最新库存信息和专业建议，请添加微信：${wechatContact}`;
+      }
+    }
+  }
+}
+
+// 视差滚动效果
+function initParallaxEffect() {
+  window.addEventListener('scroll', function() {
+    const scrollPosition = window.scrollY;
+    
+    // 对特定元素应用不同程度的视差效果
+    const parallaxElements = document.querySelectorAll('.hero h1, .hero p, .showcase h2, .workshop h2, .community h2, .inventory h2');
+    
+    parallaxElements.forEach(element => {
+      const speed = 0.2;
+      const yPos = -(scrollPosition * speed);
+      element.style.transform = `translateY(${yPos}px)`;
+    });
+    
+    // 为统计数字添加滚动动画
+    const statsSection = document.querySelector('.stats-dashboard');
+    if (statsSection) {
+      const statsSectionPosition = statsSection.getBoundingClientRect().top;
+      const screenPosition = window.innerHeight / 1.3;
+      
+      if (statsSectionPosition < screenPosition) {
+        animateStats();
+      }
+    }
+  });
+  
+  let statsAnimated = false;
+  
+  function animateStats() {
+    if (statsAnimated) return;
+    
+    const statValues = document.querySelectorAll('.stat-value');
+    
+    statValues.forEach(stat => {
+      const targetValue = parseInt(stat.textContent);
+      let currentValue = 0;
+      const duration = 2000; // 2秒
+      const increment = targetValue / (duration / 16);
+      
+      function updateValue() {
+        if (currentValue < targetValue) {
+          currentValue += increment;
+          if (currentValue > targetValue) {
+            currentValue = targetValue;
+          }
+          stat.textContent = Math.floor(currentValue);
+          requestAnimationFrame(updateValue);
+        }
+      }
+      
+      updateValue();
+    });
+    
+    statsAnimated = true;
+  }
+}
+
+// 对接进度面板功能
+function initTrackingPanel() {
+  console.log("初始化对接进度面板");
+  const trackingPanel = document.querySelector('.tracking-panel');
+  if (!trackingPanel) {
+    console.error("未找到进度跟踪面板元素");
+    return;
+  }
+
+  const processFlow = trackingPanel.querySelector('.process-flow');
+  if (!processFlow) {
+    console.error("未找到进度流程元素");
+    return;
+  }
+
+  // 初始化进度流程图 - 从localStorage获取当前状态
+  let currentTrackingData = JSON.parse(localStorage.getItem('trackingData'));
+  
+  // 如果没有保存的跟踪数据或者是新会话，初始化默认数据
+  if (!currentTrackingData) {
+    // 使用默认数据
+    currentTrackingData = {
+      currentStage: 1,
+      stages: [
+        { id: 1, name: '需求提交', status: 'active', timestamp: new Date().toISOString() },
+        { id: 2, name: '匹配库存', status: 'pending', timestamp: null },
+        { id: 3, name: '卖家确认', status: 'pending', timestamp: null },
+        { id: 4, name: '买家确认', status: 'pending', timestamp: null },
+        { id: 5, name: '确认对接', status: 'pending', timestamp: null }
+      ],
+      lastUpdated: new Date().toISOString(),
+      isSeller: false,
+      isBuyer: false,
+      needType: '',
+      productType: '',
+      quantity: '',
+      budgetRange: ''
+    };
+    
+    // 保存初始数据
+    localStorage.setItem('trackingData', JSON.stringify(currentTrackingData));
+  }
+  
+  // 检查是否已有HTML结构
+  const existingProgressBar = processFlow.querySelector('.progress-bar');
+  
+  // 如果没有进度条或为空，则重新构建整个面板
+  if (!existingProgressBar || existingProgressBar.children.length === 0) {
+    // 清空内容
+    processFlow.innerHTML = '';
+    
+    // 创建进度条
+    const progressBar = document.createElement('div');
+    progressBar.classList.add('progress-bar');
+    
+    // 添加各个阶段
+    currentTrackingData.stages.forEach(stage => {
+      const stageElement = document.createElement('div');
+      stageElement.classList.add('progress-stage', `status-${stage.status}`);
+      stageElement.dataset.stageId = stage.id;
+      
+      const stageNumber = document.createElement('div');
+      stageNumber.classList.add('stage-number');
+      stageNumber.textContent = stage.id;
+      
+      const stageName = document.createElement('div');
+      stageName.classList.add('stage-name');
+      stageName.textContent = stage.name;
+      
+      stageElement.appendChild(stageNumber);
+      stageElement.appendChild(stageName);
+      
+      // 点击阶段显示详情
+      stageElement.addEventListener('click', () => showStageDetail(stage, currentTrackingData));
+      
+      progressBar.appendChild(stageElement);
+      
+      // 添加连接线（除了最后一个阶段）
+      if (stage.id < currentTrackingData.stages.length) {
+        const connector = document.createElement('div');
+        connector.classList.add('stage-connector', `status-${stage.status}`);
+        progressBar.appendChild(connector);
+      }
+    });
+    
+    processFlow.appendChild(progressBar);
+    
+    // 添加说明文字
+    const statusInfo = document.createElement('div');
+    statusInfo.classList.add('status-info');
+    
+    // 找到当前活跃的阶段
+    const activeStage = currentTrackingData.stages.find(stage => stage.status === 'active');
+    const pendingStage = currentTrackingData.stages.find(stage => stage.status === 'pending');
+    const stageName = activeStage ? activeStage.name : (pendingStage ? pendingStage.name : '准备中');
+    
+    // 计算最后更新时间
+    const lastUpdateTime = getTimeDifference(new Date(currentTrackingData.lastUpdated), new Date());
+    
+    statusInfo.innerHTML = `当前状态：<span class="status-active">${stageName}</span> · 更新于 ${lastUpdateTime}`;
+    processFlow.appendChild(statusInfo);
+    
+    // 添加进度概要
+    const progressSummary = document.createElement('div');
+    progressSummary.classList.add('progress-summary');
+    
+    // 根据用户身份显示不同的进度概要
+    const isSeller = currentTrackingData.isSeller;
+    const isBuyer = currentTrackingData.isBuyer;
+    
+    // 获取买卖需求类型
+    const needTypeDisplay = currentTrackingData.needType ? currentTrackingData.needType : '等待确认';
+    const productTypeDisplay = currentTrackingData.productType ? currentTrackingData.productType : '等待确认';
+    
+    let summaryHTML = '';
+    if (isSeller) {
+      summaryHTML = `
+        <h4>出售信息摘要</h4>
+        <ul>
+          <li>商品类型: ${productTypeDisplay}</li>
+          <li>库存数量: ${currentTrackingData.quantity || '等待确认'}</li>
+          <li>对接进度: ${Math.round((getCompletedStages(currentTrackingData.stages) / 5) * 100)}%</li>
+        </ul>
+      `;
+    } else if (isBuyer) {
+      summaryHTML = `
+        <h4>采购信息摘要</h4>
+        <ul>
+          <li>需求类型: ${needTypeDisplay}</li>
+          <li>产品类型: ${productTypeDisplay}</li>
+          <li>预算范围: ${currentTrackingData.budgetRange || '等待确认'}</li>
+          <li>对接进度: ${Math.round((getCompletedStages(currentTrackingData.stages) / 5) * 100)}%</li>
+        </ul>
+      `;
+    } else {
+      summaryHTML = `
+        <h4>对接信息摘要</h4>
+        <ul>
+          <li>请在聊天中说明您是需要出售还是采购</li>
+          <li>对接进度: ${Math.round((getCompletedStages(currentTrackingData.stages) / 5) * 100)}%</li>
+        </ul>
+      `;
+    }
+    
+    progressSummary.innerHTML = summaryHTML;
+    processFlow.appendChild(progressSummary);
+    
+    // 添加刷新按钮
+    const refreshButton = document.createElement('button');
+    refreshButton.classList.add('refresh-tracking');
+    refreshButton.textContent = '请求更新进度';
+    refreshButton.addEventListener('click', function() {
+      // 请求平台更新进度
+      updateTrackingProgress();
+      
+      // 添加刷新动画
+      this.classList.add('refreshing');
+      // 更改按钮文本
+      this.textContent = '正在请求平台确认...';
+      setTimeout(() => {
+        this.classList.remove('refreshing');
+        this.textContent = '请求更新进度';
+      }, 2000);
+    });
+    
+    // 添加平台确认说明
+    const confirmNote = document.createElement('div');
+    confirmNote.classList.add('platform-note');
+    confirmNote.innerHTML = '提示：所有进度更新需要平台确认后才能生效';
+    
+    processFlow.appendChild(refreshButton);
+    processFlow.appendChild(confirmNote);
+  } else {
+    // 仅更新现有结构的状态
+    currentTrackingData.stages.forEach(stage => {
+      const stageElement = processFlow.querySelector(`.progress-stage[data-stage-id="${stage.id}"]`);
+      if (stageElement) {
+        // 移除所有状态类
+        stageElement.classList.remove('status-pending', 'status-active', 'status-completed');
+        // 添加当前状态类
+        stageElement.classList.add(`status-${stage.status}`);
+        
+        // 如果点击处理程序丢失，重新添加
+        if (!stageElement._hasClickHandler) {
+          stageElement.addEventListener('click', () => showStageDetail(stage, currentTrackingData));
+          stageElement._hasClickHandler = true;
+        }
+      }
+      
+      // 如果不是最后一个阶段，更新连接线
+      if (stage.id < currentTrackingData.stages.length) {
+        const connector = processFlow.querySelectorAll('.stage-connector')[stage.id - 1];
+        if (connector) {
+          connector.classList.remove('status-pending', 'status-active', 'status-completed');
+          connector.classList.add(`status-${stage.status}`);
+        }
+      }
+    });
+    
+    // 更新状态信息
+    const statusInfo = processFlow.querySelector('.status-info');
+    if (statusInfo) {
+      const activeStage = currentTrackingData.stages.find(stage => stage.status === 'active');
+      const pendingStage = currentTrackingData.stages.find(stage => stage.status === 'pending');
+      const stageName = activeStage ? activeStage.name : (pendingStage ? pendingStage.name : '准备中');
+      
+      const lastUpdateTime = getTimeDifference(new Date(currentTrackingData.lastUpdated), new Date());
+      statusInfo.innerHTML = `当前状态：<span class="status-active">${stageName}</span> · 更新于 ${lastUpdateTime}`;
+    }
+    
+    // 更新进度概要
+    const progressSummary = processFlow.querySelector('.progress-summary');
+    if (progressSummary) {
+      const isSeller = currentTrackingData.isSeller;
+      const isBuyer = currentTrackingData.isBuyer;
+      
+      const needTypeDisplay = currentTrackingData.needType ? currentTrackingData.needType : '等待确认';
+      const productTypeDisplay = currentTrackingData.productType ? currentTrackingData.productType : '等待确认';
+      
+      let summaryHTML = '';
+      if (isSeller) {
+        summaryHTML = `
+          <h4>出售信息摘要</h4>
+          <ul>
+            <li>商品类型: ${productTypeDisplay}</li>
+            <li>库存数量: ${currentTrackingData.quantity || '等待确认'}</li>
+            <li>对接进度: ${Math.round((getCompletedStages(currentTrackingData.stages) / 5) * 100)}%</li>
+          </ul>
+        `;
+      } else if (isBuyer) {
+        summaryHTML = `
+          <h4>采购信息摘要</h4>
+          <ul>
+            <li>需求类型: ${needTypeDisplay}</li>
+            <li>产品类型: ${productTypeDisplay}</li>
+            <li>预算范围: ${currentTrackingData.budgetRange || '等待确认'}</li>
+            <li>对接进度: ${Math.round((getCompletedStages(currentTrackingData.stages) / 5) * 100)}%</li>
+          </ul>
+        `;
+      } else {
+        summaryHTML = `
+          <h4>对接信息摘要</h4>
+          <ul>
+            <li>请在聊天中说明您是需要出售还是采购</li>
+            <li>对接进度: ${Math.round((getCompletedStages(currentTrackingData.stages) / 5) * 100)}%</li>
+          </ul>
+        `;
+      }
+      
+      progressSummary.innerHTML = summaryHTML;
+    }
+    
+    // 确保刷新按钮有事件监听器
+    const refreshButton = processFlow.querySelector('.refresh-tracking');
+    if (refreshButton && !refreshButton._hasClickHandler) {
+      refreshButton.addEventListener('click', function() {
+        updateTrackingProgress();
+        
+        this.classList.add('refreshing');
+        this.textContent = '正在请求平台确认...';
+        setTimeout(() => {
+          this.classList.remove('refreshing');
+          this.textContent = '请求更新进度';
+        }, 2000);
+      });
+      refreshButton._hasClickHandler = true;
+    }
+  }
+}
+
+// 根据聊天内容更新对接进度
+function updateTrackingFromChat(message, isSeller, isBuyer) {
+  // 获取当前进度数据
+  let trackingData = JSON.parse(localStorage.getItem('trackingData'));
+  
+  if (!trackingData) {
+    // 如果没有数据，初始化默认数据
+    trackingData = {
+      currentStage: 1,
+      stages: [
+        { id: 1, name: '需求提交', status: 'pending', timestamp: new Date().toISOString() },
+        { id: 2, name: '匹配库存', status: 'pending', timestamp: null },
+        { id: 3, name: '卖家确认', status: 'pending', timestamp: null },
+        { id: 4, name: '买家确认', status: 'pending', timestamp: null },
+        { id: 5, name: '确认对接', status: 'pending', timestamp: null }
+      ],
+      lastUpdated: new Date().toISOString(),
+      isSeller: false,
+      isBuyer: false,
+      needType: '',
+      productType: '',
+      quantity: '',
+      budgetRange: ''
+    };
+  }
+  
+  // 更新买卖身份
+  if (isSeller !== undefined) {
+    trackingData.isSeller = isSeller;
+  }
+  
+  if (isBuyer !== undefined) {
+    trackingData.isBuyer = isBuyer;
+  }
+  
+  // 处理阶段1：需求提交
+  if (trackingData.stages[0].status !== 'completed') {
+    // 只要有消息，就认为需求已提交
+    trackingData.stages[0].status = 'completed';
+    trackingData.stages[0].timestamp = new Date().toISOString();
+    
+    // 进入第二阶段
+    trackingData.stages[1].status = 'active';
+    trackingData.currentStage = 2;
+  }
+  
+  // 提取产品类型信息
+  const productTypes = ['牛仔', '丝绸', '棉麻', '羊毛', '尼龙', '涤纶'];
+  for (const type of productTypes) {
+    if (message.includes(type)) {
+      trackingData.productType = type;
+      break;
+    }
+  }
+  
+  // 提取需求类型
+  if (message.includes('面料') || message.includes('布料') || message.includes('布')) {
+    trackingData.needType = '面料';
+  } else if (message.includes('服装') || message.includes('衣服') || message.includes('成衣')) {
+    trackingData.needType = '服装';
+  }
+  
+  // 提取数量信息
+  const quantityMatch = message.match(/(\d+)([件条米吨个])/);
+  if (quantityMatch) {
+    trackingData.quantity = quantityMatch[0];
+  }
+  
+  // 提取价格/预算信息
+  if (message.includes('价格') || message.includes('多少钱') || message.includes('预算')) {
+    const priceMatch = message.match(/(\d+)[-~到至](\d+)[元块]/);
+    if (priceMatch) {
+      trackingData.budgetRange = priceMatch[0];
+    }
+  }
+  
+  // 阶段2：匹配库存 - 根据关键词判断
+  if (trackingData.currentStage === 2 && trackingData.stages[1].status === 'active') {
+    // 当用户提供了具体的产品和需求类型时，进入到下一阶段
+    if (trackingData.productType && trackingData.needType) {
+      if (message.includes('匹配') || message.includes('库存') || message.includes('资源') || 
+          message.includes('找到') || message.includes('有货') || containsSpecificProductInfo(message)) {
+        trackingData.stages[1].status = 'completed';
+        trackingData.stages[1].timestamp = new Date().toISOString();
+        
+        // 根据用户身份决定下一步
+        if (trackingData.isSeller) {
+          // 卖家寻找买家，进入到买家确认阶段
+          trackingData.stages[3].status = 'active';
+          trackingData.currentStage = 4;
+        } else if (trackingData.isBuyer) {
+          // 买家寻找卖家，进入到卖家确认阶段
+          trackingData.stages[2].status = 'active';
+          trackingData.currentStage = 3;
+        }
+      }
+    }
+  }
+  
+  // 阶段3：卖家确认
+  if (trackingData.currentStage === 3 && trackingData.stages[2].status === 'active') {
+    if (message.includes('卖家确认') || message.includes('供应商确认') || message.includes('已确认') || 
+        message.includes('可以供应') || message.includes('有库存')) {
+      trackingData.stages[2].status = 'completed';
+      trackingData.stages[2].timestamp = new Date().toISOString();
+      
+      // 进入买家确认阶段
+      trackingData.stages[3].status = 'active';
+      trackingData.currentStage = 4;
+    }
+  }
+  
+  // 阶段4：买家确认
+  if (trackingData.currentStage === 4 && trackingData.stages[3].status === 'active') {
+    if (message.includes('买家确认') || message.includes('客户确认') || message.includes('确认购买') || 
+        message.includes('接受') || message.includes('满意')) {
+      trackingData.stages[3].status = 'completed';
+      trackingData.stages[3].timestamp = new Date().toISOString();
+      
+      // 进入最终确认阶段
+      trackingData.stages[4].status = 'active';
+      trackingData.currentStage = 5;
+    }
+  }
+  
+  // 阶段5：确认对接
+  if (trackingData.currentStage === 5 && trackingData.stages[4].status === 'active') {
+    if (message.includes('交易成功') || message.includes('已对接') || message.includes('成交') || 
+        message.includes('已完成') || message.includes('感谢合作')) {
+      trackingData.stages[4].status = 'completed';
+      trackingData.stages[4].timestamp = new Date().toISOString();
+    }
+  }
+  
+  // 更新最后更新时间
+  trackingData.lastUpdated = new Date().toISOString();
+  
+  // 保存更新后的数据
+  localStorage.setItem('trackingData', JSON.stringify(trackingData));
+  
+  // 重新初始化进度面板以显示最新状态
+  initTrackingPanel();
+}
+
+// 显示阶段详细信息
+function showStageDetail(stage, trackingData) {
+  const wechatContact = '<strong>JJ1598929032</strong>';
+  const modal = document.createElement('div');
+  modal.classList.add('progress-modal');
+  
+  const modalContent = document.createElement('div');
+  modalContent.classList.add('modal-content');
+  
+  // 添加关闭按钮
+  const closeBtn = document.createElement('button');
+  closeBtn.classList.add('close-modal');
+  closeBtn.innerHTML = '&times;';
+  closeBtn.addEventListener('click', function() {
+    document.body.removeChild(modal);
+  });
+  
+  // 阶段详情内容
+  const stageContent = document.createElement('div');
+  stageContent.classList.add('stage-detail');
+  
+  const stageTitle = document.createElement('h3');
+  stageTitle.innerHTML = `阶段 ${stage.id}: ${stage.name} <span class="stage-status status-${stage.status}">${getStatusText(stage.status)}</span>`;
+  
+  const stageTimestamp = document.createElement('div');
+  stageTimestamp.classList.add('stage-timestamp');
+  if (stage.timestamp) {
+    const date = new Date(stage.timestamp);
+    stageTimestamp.textContent = `更新时间: ${formatDateTime(date)}`;
+  } else {
+    stageTimestamp.textContent = '尚未开始';
+  }
+  
+  const stageDescription = document.createElement('p');
+  let descriptionText = '';
+  
+  // 根据不同阶段和用户身份显示不同内容
+  const isSeller = trackingData.isSeller;
+  const isBuyer = trackingData.isBuyer;
+  
+  switch(stage.id) {
+    case 1:
+      if (stage.status === 'completed') {
+        descriptionText = `您的${isSeller ? '出售' : isBuyer ? '采购' : ''}需求已成功提交！我们的系统正在进行初步分析，以便更好地匹配合适的${isSeller ? '买家' : '资源'}。如需补充具体要求或查询进度，请添加客服微信：${wechatContact}`;
+      } else {
+        descriptionText = `请在聊天框中说明您的${isSeller ? '出售' : isBuyer ? '采购' : '需求'}意向，系统将自动为您匹配${isSeller ? '买家' : '资源'}。您可以随时添加客服微信：${wechatContact} 获取帮助。`;
+      }
+      break;
+    case 2:
+      if (stage.status === 'completed') {
+        descriptionText = `系统已成功为您匹配到符合要求的${isSeller ? '潜在买家' : '库存资源'}。现在进入${isSeller ? '买家' : '卖家'}确认阶段。如需了解匹配详情，请添加微信：${wechatContact}`;
+      } else if (stage.status === 'active') {
+        descriptionText = `系统正在根据您提供的要求匹配${isSeller ? '买家资源' : '库存'}。这个过程通常需要12小时内完成。如需加快进度或提供更详细的需求，请立即添加微信：${wechatContact}`;
+      } else {
+        descriptionText = `此阶段尚未开始。系统将在需求提交后自动为您匹配${isSeller ? '买家' : '库存资源'}。`;
+      }
+      break;
+    case 3:
+      if (stage.status === 'completed') {
+        descriptionText = `卖家已确认库存有效，现在等待买家最终确认。如有任何问题，请添加微信：${wechatContact}`;
+      } else if (stage.status === 'active') {
+        descriptionText = `我们已找到符合要求的库存，正在等待卖家确认。通常会在24小时内得到回复。如想优先处理或了解更多详情，请添加微信：${wechatContact}`;
+      } else {
+        descriptionText = `此阶段尚未开始。系统将在匹配到合适库存后联系卖家确认。`;
+      }
+      break;
+    case 4:
+      if (stage.status === 'completed') {
+        descriptionText = `买家已确认购买意向，现在进入最终确认阶段。请添加微信：${wechatContact} 完成交易细节确认。`;
+      } else if (stage.status === 'active') {
+        descriptionText = `卖家已确认库存有效，等待您的最终确认。为确保交易顺利进行，请添加微信：${wechatContact} 进行后续沟通`;
+      } else {
+        descriptionText = `此阶段尚未开始。系统将在卖家确认后联系买家最终确认。`;
+      }
+      break;
+    case 5:
+      if (stage.status === 'completed') {
+        descriptionText = `恭喜！交易已成功对接。请通过微信：${wechatContact} 完成后续交易流程。`;
+      } else if (stage.status === 'active') {
+        descriptionText = `恭喜！双方已达成对接意向。为保障交易安全和顺利完成后续流程，请立即添加微信：${wechatContact} 获取详细指导`;
+      } else {
+        descriptionText = `此阶段尚未开始。系统将在买家确认后进入最终对接确认阶段。`;
+      }
+      break;
+    default:
+      descriptionText = `当前阶段状态更新中。如需及时了解最新进展，请添加客服微信：${wechatContact}`;
+  }
+  
+  stageDescription.innerHTML = descriptionText;
+  
+  const nextStepsTitle = document.createElement('h4');
+  nextStepsTitle.textContent = '下一步操作';
+  
+  const nextStepsList = document.createElement('ul');
+  const nextSteps = getNextSteps(stage.id, stage.status, trackingData);
+  
+  nextSteps.forEach(step => {
+    const listItem = document.createElement('li');
+    listItem.innerHTML = step;
+    nextStepsList.appendChild(listItem);
+  });
+  
+  // 添加平台确认提示
+  const platformConfirmNote = document.createElement('div');
+  platformConfirmNote.classList.add('platform-confirmation-note');
+  platformConfirmNote.innerHTML = `<i>注意：对接进度由平台根据实际情况确认更新，阶段进度无法手动修改。如需加速进度，请添加客服微信：${wechatContact}</i>`;
+  
+  stageContent.appendChild(stageTitle);
+  stageContent.appendChild(stageTimestamp);
+  stageContent.appendChild(stageDescription);
+  stageContent.appendChild(nextStepsTitle);
+  stageContent.appendChild(nextStepsList);
+  stageContent.appendChild(platformConfirmNote);
+  
+  modalContent.appendChild(closeBtn);
+  modalContent.appendChild(stageContent);
+  modal.appendChild(modalContent);
+  
+  document.body.appendChild(modal);
+}
+
+// 更新对接进度
+function updateTrackingProgress() {
+  let trackingData = JSON.parse(localStorage.getItem('trackingData'));
+  
+  if (!trackingData) return;
+  
+  // 获取当前活跃阶段
+  let currentActiveIndex = trackingData.stages.findIndex(stage => stage.status === 'active');
+  
+  // 显示进度更新中消息
+  showProgressUpdateMessage();
+  
+  // 模拟平台确认过程（实际环境中应通过后端API获取确认结果）
+  setTimeout(() => {
+    // 平台审核确认后，更新进度
+    // 注意：在实际环境中，这个确认过程应该来自服务器
+    const platformConfirmed = Math.random() > 0.5; // 模拟平台确认结果
+    
+    if (platformConfirmed && currentActiveIndex !== -1 && currentActiveIndex < trackingData.stages.length - 1) {
+      // 当前阶段完成
+      trackingData.stages[currentActiveIndex].status = 'completed';
+      trackingData.stages[currentActiveIndex].timestamp = new Date().toISOString();
+      
+      // 下一阶段激活
+      trackingData.stages[currentActiveIndex + 1].status = 'active';
+      trackingData.currentStage = currentActiveIndex + 2; // +2是因为stage id从1开始
+      
+      // 显示成功消息
+      showNotification("进度已更新", "平台已确认您的进度更新", "success");
+    } else {
+      // 平台未确认
+      showNotification("进度更新等待中", "您的进度更新请求正在等待平台确认", "info");
+    }
+    
+    // 随机更新其他信息
+    if (!trackingData.productType && Math.random() > 0.7) {
+      const products = ['牛仔', '丝绸', '棉麻', '羊毛'];
+      trackingData.productType = products[Math.floor(Math.random() * products.length)];
+    }
+    
+    if (!trackingData.needType && Math.random() > 0.7) {
+      trackingData.needType = Math.random() > 0.5 ? '面料' : '服装';
+    }
+    
+    if (!trackingData.quantity && trackingData.isSeller && Math.random() > 0.7) {
+      const units = ['件', '米', '条'];
+      trackingData.quantity = `${Math.floor(Math.random() * 1000) + 10}${units[Math.floor(Math.random() * units.length)]}`;
+    }
+    
+    if (!trackingData.budgetRange && trackingData.isBuyer && Math.random() > 0.7) {
+      const min = Math.floor(Math.random() * 500) + 50;
+      const max = min + Math.floor(Math.random() * 500) + 50;
+      trackingData.budgetRange = `${min}-${max}元`;
+    }
+    
+    // 更新最后更新时间
+    trackingData.lastUpdated = new Date().toISOString();
+    
+    // 保存更新后的数据
+    localStorage.setItem('trackingData', JSON.stringify(trackingData));
+    
+    // 重新初始化进度面板
+    initTrackingPanel();
+  }, 2000); // 模拟平台确认延迟
+}
+
+// 显示进度更新中的消息
+function showProgressUpdateMessage() {
+  const notification = document.createElement('div');
+  notification.classList.add('progress-notification', 'updating');
+  notification.innerHTML = `
+    <div class="notification-icon">
+      <div class="loading-spinner"></div>
+    </div>
+    <div class="notification-content">
+      <h4>进度更新请求已提交</h4>
+      <p>正在等待平台确认，这可能需要一些时间...</p>
+    </div>
+  `;
+  
+  document.body.appendChild(notification);
+  
+  // 1.5秒后移除通知
+  setTimeout(() => {
+    notification.classList.add('fade-out');
+    setTimeout(() => {
+      if (document.body.contains(notification)) {
+        document.body.removeChild(notification);
+      }
+    }, 500);
+  }, 1500);
+}
+
+// 显示通知
+function showNotification(title, message, type = "info") {
+  const notification = document.createElement('div');
+  notification.classList.add('progress-notification', type);
+  
+  let icon = '';
+  if (type === 'success') {
+    icon = '<div class="notification-icon success">✓</div>';
+  } else if (type === 'error') {
+    icon = '<div class="notification-icon error">✗</div>';
+  } else {
+    icon = '<div class="notification-icon info">i</div>';
+  }
+  
+  notification.innerHTML = `
+    ${icon}
+    <div class="notification-content">
+      <h4>${title}</h4>
+      <p>${message}</p>
+    </div>
+  `;
+  
+  document.body.appendChild(notification);
+  
+  // 3秒后移除通知
+  setTimeout(() => {
+    notification.classList.add('fade-out');
+    setTimeout(() => {
+      if (document.body.contains(notification)) {
+        document.body.removeChild(notification);
+      }
+    }, 500);
+  }, 3000);
+}
+
+// 获取状态文本描述
+function getStatusText(status) {
+  switch(status) {
+    case 'pending': return '等待中';
+    case 'active': return '进行中';
+    case 'completed': return '已完成';
+    default: return '未知状态';
+  }
+}
+
+// 格式化日期时间
+function formatDateTime(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  
+  return `${year}-${month}-${day} ${hours}:${minutes}`;
+}
+
+// 获取时间差异的友好描述
+function getTimeDifference(oldDate, newDate) {
+  const diffMs = newDate - oldDate;
+  const diffSec = Math.floor(diffMs / 1000);
+  const diffMin = Math.floor(diffSec / 60);
+  const diffHour = Math.floor(diffMin / 60);
+  const diffDay = Math.floor(diffHour / 24);
+  
+  if (diffSec < 60) {
+    return '刚刚';
+  } else if (diffMin < 60) {
+    return `${diffMin}分钟前`;
+  } else if (diffHour < 24) {
+    return `${diffHour}小时前`;
+  } else if (diffDay < 30) {
+    return `${diffDay}天前`;
+  } else {
+    const month = String(oldDate.getMonth() + 1).padStart(2, '0');
+    const day = String(oldDate.getDate()).padStart(2, '0');
+    return `${month}-${day}`;
+  }
+}
+
+// 获取已完成阶段的数量
+function getCompletedStages(stages) {
+  if (!stages || !Array.isArray(stages)) return 0;
+  return stages.filter(stage => stage.status === 'completed').length;
+}
+
+// 判断消息是否包含具体产品信息
+function containsSpecificProductInfo(message) {
+  // 匹配具体的产品描述
+  const patterns = [
+    /\d+[件条米吨]/,  // 匹配数量单位
+    /款式|型号|规格|尺寸|颜色|成分/,  // 匹配产品属性
+    /牌|品牌|厂家|生产商/,  // 匹配品牌信息
+    /价格|报价|元\/[米件条]/  // 匹配价格信息
+  ];
+  
+  return patterns.some(pattern => pattern.test(message));
+}
+
+// 根据不同阶段和用户身份获取下一步操作指引
+function getNextSteps(stageId, stageStatus, trackingData) {
+  const wechatContact = '<strong>JJ1598929032</strong>';
+  const isSeller = trackingData.isSeller;
+  const isBuyer = trackingData.isBuyer;
+  
+  // 如果阶段已完成，返回空步骤列表
+  if (stageStatus === 'completed') {
+    return [`此阶段已完成，请继续推进下一阶段`, `如有问题请添加微信：${wechatContact} 咨询`];
+  }
+  
+  // 如果阶段未开始，返回等待指引
+  if (stageStatus === 'pending') {
+    return [`请等待前序阶段完成后再进行此阶段`, `如需加速进度，请添加微信：${wechatContact}`];
+  }
+  
+  // 阶段处于活跃状态，根据不同情况返回指引
+  if (isSeller) {
+    switch(stageId) {
+      case 1:
+        return [
+          `详细描述您要出售的产品类型、数量和期望价格`,
+          `提供产品图片或详细规格说明`,
+          `添加微信：${wechatContact} 加速对接进程`
+        ];
+      case 2:
+        return [
+          `耐心等待系统为您匹配潜在买家`,
+          `完善您的产品细节信息以提高匹配率`,
+          `添加微信：${wechatContact} 获取实时匹配进度`
+        ];
+      case 3:
+        return [
+          `准备好详细的产品说明和价格资料`,
+          `确认您的发货能力和库存情况`,
+          `添加微信：${wechatContact} 了解买家需求细节`
+        ];
+      case 4:
+        return [
+          `准备详细的产品资料和报价单`,
+          `确认您的仓库库存和物流配送方案`,
+          `添加微信：${wechatContact} 与买家直接沟通`
+        ];
+      case 5:
+        return [
+          `确认交易细节和付款方式`,
+          `准备产品发货和售后服务方案`,
+          `必须添加微信：${wechatContact} 完成最终交易`
+        ];
+      default:
+        return [`添加微信：${wechatContact} 获取指导`];
+    }
+  } else if (isBuyer) {
+    switch(stageId) {
+      case 1:
+        return [
+          `详细描述您需要的产品类型、数量和预算`,
+          `说明您对产品质量和规格的要求`,
+          `添加微信：${wechatContact} 加速对接进程`
+        ];
+      case 2:
+        return [
+          `耐心等待系统为您匹配合适库存`,
+          `完善您的需求细节以提高匹配精准度`,
+          `添加微信：${wechatContact} 获取实时匹配进度`
+        ];
+      case 3:
+        return [
+          `准备好与卖家沟通的具体问题`,
+          `确认您的采购预算和付款方式`,
+          `添加微信：${wechatContact} 了解卖家确认进度`
+        ];
+      case 4:
+        return [
+          `仔细评估卖家提供的产品信息`,
+          `确认产品是否满足您的需求`,
+          `添加微信：${wechatContact} 与卖家直接沟通`
+        ];
+      case 5:
+        return [
+          `确认交易细节和收货地址`,
+          `准备付款和验收产品`,
+          `必须添加微信：${wechatContact} 完成最终交易`
+        ];
+      default:
+        return [`添加微信：${wechatContact} 获取指导`];
+    }
+  } else {
+    // 用户身份未确定
+    switch(stageId) {
+      case 1:
+        return [
+          `请在聊天框中说明您是希望出售还是采购`,
+          `详细描述您的需求或产品信息`,
+          `添加微信：${wechatContact} 获取专业指导`
+        ];
+      default:
+        return [
+          `请先明确您的身份（买家/卖家）`,
+          `添加微信：${wechatContact} 获取帮助`
+        ];
+    }
+  }
+}
+
+// Newsletter subscription functionality
+function initNewsletterSystem() {
+  const subscribeForm = document.querySelector('.subscribe-form');
+  const emailInput = subscribeForm.querySelector('input[type="email"]');
+  
+  subscribeForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = emailInput.value.trim();
+    
+    if (!email) {
+      showSubscriptionNotification('error', '订阅失败', '请输入有效的邮箱地址');
+      return;
+    }
+    
+    if (!isValidEmail(email)) {
+      showSubscriptionNotification('error', '订阅失败', '请输入正确格式的邮箱地址');
+      return;
+    }
+    
+    // 检查是否是常见邮箱提供商
+    const isCommonProvider = checkEmailProvider(email);
+    if (!isCommonProvider) {
+      showSubscriptionNotification('info', '提示', '您使用的邮箱不是常见邮箱提供商，可能会影响接收效果');
+    }
+    
+    // 模拟向服务器发送请求
+    showSubscriptionNotification('info', '处理中', '正在处理您的订阅请求...');
+    
+    // 模拟API请求延迟
+    setTimeout(() => {
+      // 将邮箱保存到localStorage以便演示
+      saveSubscriber(email);
+      
+      // 发送验证邮件
+      sendVerificationEmail(email);
+      
+      // 清空输入
+      emailInput.value = '';
+    }, 1500);
+  });
+  
+  // 添加检查邮件接收状态的按钮（仅用于演示）
+  addEmailCheckingTools();
+}
+
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+function checkEmailProvider(email) {
+  const commonProviders = [
+    'gmail.com', 'outlook.com', 'hotmail.com', 'yahoo.com', 'qq.com', 
+    '163.com', '126.com', 'sina.com', 'sohu.com', 'aliyun.com', 
+    'foxmail.com', '139.com', '189.com', 'live.com', 'msn.com'
+  ];
+  
+  const domain = email.split('@')[1].toLowerCase();
+  return commonProviders.includes(domain);
+}
+
+function saveSubscriber(email) {
+  let subscribers = JSON.parse(localStorage.getItem('newsletter_subscribers') || '[]');
+  
+  // 检查是否已订阅
+  if (subscribers.some(sub => sub.email === email)) {
+    showSubscriptionNotification('info', '已订阅', '此邮箱已在订阅列表中，无需重复订阅');
+    return;
+  }
+  
+  // 添加订阅者，包含验证状态和时间戳
+  subscribers.push({
+    email: email,
+    verified: false,
+    subscribeDate: new Date().toISOString(),
+    lastEmailSent: null,
+    emailStatus: {
+      deliveryAttempts: 0,
+      lastStatus: 'pending',
+      bounceCount: 0
+    }
+  });
+  
+  localStorage.setItem('newsletter_subscribers', JSON.stringify(subscribers));
+  showSubscriptionNotification('success', '订阅请求已提交', '请查收验证邮件以完成订阅');
+}
+
+function sendVerificationEmail(email) {
+  // 在实际应用中，这里会有API调用发送真实邮件
+  console.log(`发送验证邮件到: ${email}`);
+  
+  // 模拟验证过程 (实际中会有点击链接验证流程)
+  simulateVerification(email);
+}
+
+function simulateVerification(email) {
+  // 模拟用户打开验证邮件并点击验证链接的过程
+  setTimeout(() => {
+    verifySubscriber(email);
+  }, 3000);
+}
+
+function verifySubscriber(email) {
+  let subscribers = JSON.parse(localStorage.getItem('newsletter_subscribers') || '[]');
+  const index = subscribers.findIndex(sub => sub.email === email);
+  
+  if (index !== -1) {
+    subscribers[index].verified = true;
+    subscribers[index].verifiedDate = new Date().toISOString();
+    localStorage.setItem('newsletter_subscribers', JSON.stringify(subscribers));
+    
+    showSubscriptionNotification('success', '订阅成功', '您的邮箱已成功验证，将开始接收网站更新');
+  }
+}
+
+// 发送订阅更新
+function sendSubscriptionUpdates() {
+  const subscribers = JSON.parse(localStorage.getItem('newsletter_subscribers') || '[]');
+  const updates = JSON.parse(localStorage.getItem('latest_website_updates') || '[]');
+  
+  // 筛选已验证的订阅者
+  const verifiedSubscribers = subscribers.filter(sub => sub.verified);
+  
+  if (verifiedSubscribers.length === 0) {
+    showSubscriptionNotification('error', '无法发送', '当前没有已验证的订阅者');
+    return;
+  }
+  
+  if (updates.length === 0) {
+    showSubscriptionNotification('error', '无法发送', '当前没有更新内容可发送');
+    return;
+  }
+  
+  // 在实际项目中这里会有API调用来发送邮件
+  // 模拟发送成功
+  showSubscriptionNotification('info', '发送中', `正在向${verifiedSubscribers.length}位订阅者发送更新...`);
+  
+  // 更新每个订阅者的发送状态
+  let updatedSubscribers = [...subscribers];
+  for (let i = 0; i < updatedSubscribers.length; i++) {
+    if (updatedSubscribers[i].verified) {
+      updatedSubscribers[i].lastEmailSent = new Date().toISOString();
+      updatedSubscribers[i].emailStatus.deliveryAttempts++;
+      updatedSubscribers[i].emailStatus.lastStatus = simulateEmailDelivery(updatedSubscribers[i].email);
+      
+      if (updatedSubscribers[i].emailStatus.lastStatus === 'bounced') {
+        updatedSubscribers[i].emailStatus.bounceCount++;
+      }
+    }
+  }
+  
+  localStorage.setItem('newsletter_subscribers', JSON.stringify(updatedSubscribers));
+  
+  setTimeout(() => {
+    // 汇总发送结果
+    const results = analyzeDeliveryResults(updatedSubscribers);
+    
+    // 模拟发送过程
+    const updatesPreview = document.createElement('div');
+    updatesPreview.className = 'updates-preview';
+    updatesPreview.innerHTML = `
+      <h3>网站更新内容已发送</h3>
+      <p>发送结果: 成功 ${results.delivered}，等待中 ${results.pending}，失败 ${results.failed}</p>
+      <div class="delivery-summary">
+        <div class="delivery-status">
+          <span class="status-label">发送成功率:</span>
+          <div class="status-bar">
+            <div class="status-progress" style="width: ${(results.delivered / verifiedSubscribers.length) * 100}%"></div>
+          </div>
+          <span class="status-percent">${Math.round((results.delivered / verifiedSubscribers.length) * 100)}%</span>
+        </div>
+      </div>
+      <ul>
+        ${updates.map(update => `
+          <li>
+            <strong>${update.type}:</strong> ${update.title} 
+            <span class="update-date">${update.date}</span>
+          </li>
+        `).join('')}
+      </ul>
+      <div class="troubleshooting-link">
+        <button class="show-delivery-details">查看详细发送报告</button>
+      </div>
+      <button class="close-preview">关闭</button>
+    `;
+    
+    document.body.appendChild(updatesPreview);
+    
+    // 记录最后发送时间
+    localStorage.setItem('last_newsletter_sent', new Date().toISOString());
+    
+    // 添加关闭按钮功能
+    updatesPreview.querySelector('.close-preview').addEventListener('click', () => {
+      updatesPreview.remove();
+    });
+    
+    // 添加查看详细报告功能
+    updatesPreview.querySelector('.show-delivery-details').addEventListener('click', () => {
+      showEmailDeliveryReport(updatedSubscribers);
+      updatesPreview.remove();
+    });
+    
+    // 几秒后自动关闭
+    setTimeout(() => {
+      if (document.body.contains(updatesPreview)) {
+        updatesPreview.remove();
+      }
+    }, 12000);
+    
+    showSubscriptionNotification('success', '发送完成', `更新内容已发送给${verifiedSubscribers.length}位订阅者`);
+  }, 2000);
+}
+
+function simulateEmailDelivery(email) {
+  // 模拟邮件发送状态
+  // 在实际应用中，这将是基于ESP（邮件服务提供商）的回调
+  const domain = email.split('@')[1].toLowerCase();
+  
+  // 模拟一些常见的邮件发送问题
+  if (['example.com', 'test.com'].includes(domain)) {
+    return 'bounced'; // 模拟邮箱不存在
+  }
+  
+  // 随机模拟一些可能的失败情况
+  const random = Math.random();
+  if (random < 0.05) return 'bounced';
+  if (random < 0.1) return 'spam';
+  if (random < 0.15) return 'pending';
+  
+  return 'delivered';
+}
+
+function analyzeDeliveryResults(subscribers) {
+  const verifiedSubscribers = subscribers.filter(sub => sub.verified);
+  
+  return {
+    total: verifiedSubscribers.length,
+    delivered: verifiedSubscribers.filter(sub => sub.emailStatus.lastStatus === 'delivered').length,
+    failed: verifiedSubscribers.filter(sub => ['bounced', 'spam'].includes(sub.emailStatus.lastStatus)).length,
+    pending: verifiedSubscribers.filter(sub => sub.emailStatus.lastStatus === 'pending').length
+  };
+}
+
+function showEmailDeliveryReport(subscribers) {
+  const verifiedSubscribers = subscribers.filter(sub => sub.verified);
+  
+  const reportModal = document.createElement('div');
+  reportModal.className = 'email-report-modal';
+  
+  reportModal.innerHTML = `
+    <div class="report-content">
+      <div class="report-header">
+        <h3>邮件发送详情报告</h3>
+        <button class="close-report">×</button>
+      </div>
+      <div class="report-body">
+        <div class="report-summary">
+          <div class="summary-item">
+            <span class="summary-count">${verifiedSubscribers.length}</span>
+            <span class="summary-label">总订阅数</span>
+          </div>
+          <div class="summary-item success">
+            <span class="summary-count">${verifiedSubscribers.filter(sub => sub.emailStatus.lastStatus === 'delivered').length}</span>
+            <span class="summary-label">发送成功</span>
+          </div>
+          <div class="summary-item warning">
+            <span class="summary-count">${verifiedSubscribers.filter(sub => sub.emailStatus.lastStatus === 'spam').length}</span>
+            <span class="summary-label">可能进入垃圾箱</span>
+          </div>
+          <div class="summary-item error">
+            <span class="summary-count">${verifiedSubscribers.filter(sub => sub.emailStatus.lastStatus === 'bounced').length}</span>
+            <span class="summary-label">退信/发送失败</span>
+          </div>
+        </div>
+        
+        <h4>发送详情</h4>
+        <div class="subscriber-list">
+          <div class="subscriber-header">
+            <span class="sub-email">邮箱地址</span>
+            <span class="sub-status">状态</span>
+            <span class="sub-action">操作</span>
+          </div>
+          ${verifiedSubscribers.map(sub => `
+            <div class="subscriber-row ${sub.emailStatus.lastStatus}">
+              <span class="sub-email">${sub.email}</span>
+              <span class="sub-status">${getStatusText(sub.emailStatus.lastStatus)}</span>
+              <span class="sub-action">
+                ${sub.emailStatus.lastStatus !== 'delivered' ? 
+                  `<button class="resend-btn" data-email="${sub.email}">重新发送</button>` : 
+                  '<span class="success-check">✓</span>'}
+              </span>
+            </div>
+          `).join('')}
+        </div>
+        
+        <div class="troubleshooting-tips">
+          <h4>未收到邮件的可能原因</h4>
+          <ul>
+            <li>邮箱地址可能输入错误</li>
+            <li>邮件可能被归类为垃圾邮件，请检查垃圾邮件文件夹</li>
+            <li>部分邮箱服务商可能有较严格的过滤策略</li>
+            <li>邮件服务器可能暂时性故障</li>
+          </ul>
+          
+          <h4>改善邮件接收的建议</h4>
+          <ul>
+            <li>将我们的邮箱地址添加到您的联系人名单</li>
+            <li>将我们的域名标记为安全发件人</li>
+            <li>定期检查您的垃圾邮件文件夹</li>
+            <li>考虑使用主流邮箱服务(如QQ邮箱、163、Gmail等)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="report-footer">
+        <button class="export-report">导出报告</button>
+        <button class="close-report-btn">关闭</button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(reportModal);
+  
+  // 添加关闭功能
+  const closeButtons = reportModal.querySelectorAll('.close-report, .close-report-btn');
+  closeButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      reportModal.remove();
+    });
+  });
+  
+  // 添加重发邮件功能
+  const resendButtons = reportModal.querySelectorAll('.resend-btn');
+  resendButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const email = btn.dataset.email;
+      resendEmail(email, btn);
+    });
+  });
+  
+  // 添加导出报告功能
+  reportModal.querySelector('.export-report').addEventListener('click', () => {
+    exportDeliveryReport(subscribers);
+  });
+}
+
+function getStatusText(status) {
+  switch(status) {
+    case 'delivered': return '发送成功';
+    case 'bounced': return '退信失败';
+    case 'spam': return '可能进入垃圾箱';
+    case 'pending': return '发送中';
+    default: return '未知状态';
+  }
+}
+
+function resendEmail(email, button) {
+  // 更改按钮状态
+  button.textContent = '发送中...';
+  button.disabled = true;
+  
+  // 模拟重新发送过程
+  setTimeout(() => {
+    let subscribers = JSON.parse(localStorage.getItem('newsletter_subscribers') || '[]');
+    const index = subscribers.findIndex(sub => sub.email === email);
+    
+    if (index !== -1) {
+      // 更新状态
+      subscribers[index].emailStatus.deliveryAttempts++;
+      subscribers[index].emailStatus.lastStatus = 'delivered'; // 假设重发成功
+      subscribers[index].lastEmailSent = new Date().toISOString();
+      
+      localStorage.setItem('newsletter_subscribers', JSON.stringify(subscribers));
+      
+      // 更新UI
+      const row = button.closest('.subscriber-row');
+      row.className = 'subscriber-row delivered';
+      row.querySelector('.sub-status').textContent = '发送成功';
+      button.parentNode.innerHTML = '<span class="success-check">✓</span>';
+      
+      showSubscriptionNotification('success', '重发成功', `已成功重新发送邮件到 ${email}`);
+    }
+  }, 2000);
+}
+
+function exportDeliveryReport(subscribers) {
+  // 在实际应用中，这里会生成CSV或PDF文件
+  // 目前只是模拟导出功能
+  showSubscriptionNotification('success', '导出成功', '已将报告导出到您的下载文件夹');
+}
+
+function showSubscriptionNotification(type, title, message) {
+  const notification = document.createElement('div');
+  notification.classList.add('subscription-notification', type);
+  notification.innerHTML = `
+    <div class="notification-icon">${type === 'success' ? '✓' : type === 'error' ? '✕' : 'i'}</div>
+    <div class="notification-content">
+      <h4>${title}</h4>
+      <p>${message}</p>
+    </div>
+    <button class="close-notification">×</button>
+  `;
+  
+  document.body.appendChild(notification);
+  
+  // 添加关闭功能
+  notification.querySelector('.close-notification').addEventListener('click', () => {
+    notification.remove();
+  });
+  
+  // 3秒后自动消失
+  setTimeout(() => {
+    notification.classList.add('fade-out');
+    setTimeout(() => {
+      if (document.body.contains(notification)) {
+        document.body.removeChild(notification);
+      }
+    }, 500);
+  }, 3000);
+}
+
+// 添加邮件检查工具（演示功能）
+function addEmailCheckingTools() {
+  const subscribeForm = document.querySelector('.subscribe-form');
+  if (!subscribeForm) return;
+  
+  const toolsContainer = document.createElement('div');
+  toolsContainer.classList.add('email-tools');
+  toolsContainer.innerHTML = `
+    <button class="check-emails-btn">检查邮件接收状态</button>
+    <button class="send-updates-btn">发送网站更新</button>
+  `;
+  
+  subscribeForm.parentNode.appendChild(toolsContainer);
+  
+  // 添加功能
+  toolsContainer.querySelector('.check-emails-btn').addEventListener('click', function() {
+    const subscribers = JSON.parse(localStorage.getItem('newsletter_subscribers') || '[]');
+    if (subscribers.length === 0) {
+      showSubscriptionNotification('error', '无法检查', '当前没有订阅者');
+      return;
+    }
+    showEmailDeliveryReport(subscribers);
+  });
+  
+  toolsContainer.querySelector('.send-updates-btn').addEventListener('click', function() {
+    sendSubscriptionUpdates();
+  });
+}
+
+function getCurrentDate() {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+} 
+} 

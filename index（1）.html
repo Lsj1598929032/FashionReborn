@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fashion Reborn - 服装改造艺术空间</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="cube-styles.css">
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">Fashion Reborn</div>
+    <nav class="nav-menu">
+      <ul>
+        <li class="active"><a href="#home">首页</a></li>
+        <li><a href="#workshop">创意工坊</a></li>
+        <li><a href="#community">改造社区</a></li>
+        <li><a href="#inventory">库存对接</a></li>
+        <li><a href="#about">关于我</a></li>
+      </ul>
+    </nav>
+    <div class="nav-right">
+      <button class="lang-switch">EN</button>
+      <button class="theme-switch">🌙</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="home" class="hero">
+      <div class="video-background">
+        <video autoplay muted loop>
+          <source src="assets/hero-video.mp4" type="video/mp4">
+        </video>
+        <div class="overlay"></div>
+      </div>
+      <div class="hero-content">
+        <h1>Fashion Reborn</h1>
+        <p>重新定义服装生命，创造可持续时尚未来</p>
+        <button class="cta-button">探索作品</button>
+      </div>
+    </section>
+
+    <section id="showcase" class="showcase">
+      <h2>精选作品</h2>
+      <div class="showcase-container">
+        <!-- 3D展示墙将通过JS实现 -->
+        <div class="placeholder-3d">3D作品展示区域</div>
+      </div>
+      
+      <div class="stats-dashboard">
+        <div class="stat-item">
+          <div class="stat-value">256</div>
+          <div class="stat-label">累计改造衣物</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">532</div>
+          <div class="stat-label">节约布料(米)</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">189</div>
+          <div class="stat-label">社区活跃用户</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="workshop" class="workshop">
+      <h2>创意工坊</h2>
+      <div class="material-tags">
+        <button class="tag active">全部</button>
+        <button class="tag">棉麻</button>
+        <button class="tag">丝绸</button>
+        <button class="tag">牛仔</button>
+        <button class="tag">针织</button>
+        <button class="tag">皮革</button>
+      </div>
+      
+      <div class="projects-grid">
+        <!-- 项目展示区，将通过JS填充 -->
+      </div>
+      
+      <div class="video-section">
+        <h3>教程视频</h3>
+        <div class="video-gallery">
+          <!-- 视频内容将通过JS填充 -->
+        </div>
+      </div>
+    </section>
+
+    <section id="community" class="community">
+      <h2>改造社区</h2>
+      
+      <div class="community-market">
+        <div class="ugc-feed">
+          <!-- 用户内容将通过JS填充 -->
+        </div>
+        <div class="community-map">
+          <h3>社区热力图</h3>
+          <div class="map-container">
+            <!-- 地图将通过JS生成 -->
+          </div>
+        </div>
+      </div>
+      
+      <div class="challenge-section">
+        <h3>本月挑战: 旧牛仔重生计划</h3>
+        <div class="challenge-entries">
+          <!-- 挑战作品将通过JS填充 -->
+        </div>
+      </div>
+      
+      <div class="knowledge-base">
+        <h3>知识共享库</h3>
+        <div class="resources-grid">
+          <!-- 资源将通过JS填充 -->
+        </div>
+      </div>
+    </section>
+
+    <section id="inventory" class="inventory section">
+      <div class="container" style="background-color: var(--color-primary);">
+        <div class="section-header">
+          <div class="cube-container">
+            <div class="cube">
+              <div class="cube-face cube-face-front"></div>
+              <div class="cube-face cube-face-back"></div>
+              <div class="cube-face cube-face-right"></div>
+              <div class="cube-face cube-face-left"></div>
+              <div class="cube-face cube-face-top"></div>
+              <div class="cube-face cube-face-bottom"></div>
+            </div>
+          </div>
+          <h2>库存匹配系统</h2>
+          <p>输入您想要的面料信息，我们将为您匹配库存并提供专业服装改造建议</p>
+        </div>
+        
+        <div class="chat-interface">
+          <div class="chat-sidebar">
+            <div class="sidebar-header">历史会话</div>
+            <!-- 历史会话将在这里显示 -->
+          </div>
+          <div class="chat-main">
+            <div class="chat-messages">
+              <!-- 消息将在这里显示 -->
+            </div>
+            <div class="chat-input">
+              <input type="text" placeholder="输入您的面料需求或问题...">
+              <button class="send-button">发送</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 对接进度跟踪面板 -->
+        <div class="tracking-panel">
+          <h3>对接进度</h3>
+          <div class="process-flow">
+            <!-- 进度流程图将在这里显示 -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-top">
+      <div class="social-media">
+        <h3>关注我们</h3>
+        <div class="social-icons">
+          <a href="#" class="social-icon">微博</a>
+          <a href="#" class="social-icon">微信</a>
+          <a href="#" class="social-icon">抖音</a>
+          <a href="#" class="social-icon">小红书</a>
+        </div>
+      </div>
+      
+      <div class="newsletter">
+        <h3>订阅更新</h3>
+        <form class="subscribe-form">
+          <input type="email" placeholder="您的邮箱地址">
+          <button type="submit">订阅</button>
+        </form>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <div class="copyright">
+        © 2023 Fashion Reborn. 保留所有权利。
+      </div>
+      <div class="eco-certifications">
+        <span class="eco-badge">可持续时尚认证</span>
+        <span class="visitor-count">访问量: 12,345</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html> 
