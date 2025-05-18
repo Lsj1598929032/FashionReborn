@@ -1,0 +1,1011 @@
+/* 材质图书馆样式 */
+.material-wall {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 30px;
+  min-height: 450px;
+  padding: 20px 0;
+  position: relative;
+  transition: all 0.5s ease;
+}
+
+/* 旋转和缩放动画 */
+.material-wall.rotate-left {
+  animation: rotateLeft 0.5s ease;
+}
+
+.material-wall.rotate-right {
+  animation: rotateRight 0.5s ease;
+}
+
+.material-wall.zoom-in {
+  transform: scale(1.2);
+}
+
+.material-wall.zoom-out {
+  transform: scale(0.8);
+}
+
+@keyframes rotateLeft {
+  0% { transform: rotateY(0deg); }
+  50% { transform: rotateY(-15deg); }
+  100% { transform: rotateY(0deg); }
+}
+
+@keyframes rotateRight {
+  0% { transform: rotateY(0deg); }
+  50% { transform: rotateY(15deg); }
+  100% { transform: rotateY(0deg); }
+}
+
+/* 材质卡片样式 */
+.material-card {
+  position: relative;
+  height: 300px;
+  border-radius: 12px;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card-3d {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  perspective: 1000px;
+  transition: transform 0.8s;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card-front, .card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.card-front {
+  background-color: #f8f8f8;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-front img {
+  width: 100%;
+  height: 80%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.material-card:hover .card-front img {
+  transform: scale(1.05);
+}
+
+.material-name {
+  padding: 15px;
+  text-align: center;
+  font-weight: 500;
+  color: #333;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(5px);
+  z-index: 2;
+}
+
+.card-back {
+  background: linear-gradient(135deg, #f9f9f9 0%, #f0f0f0 100%);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transform: rotateY(180deg);
+}
+
+.card-back h4 {
+  margin: 0 0 15px;
+  font-size: 18px;
+  text-align: center;
+  color: #333;
+}
+
+.material-brief {
+  display: flex;
+  justify-content: space-around;
+  margin: 15px 0;
+}
+
+.brief-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--primary-color, #3a67b2);
+}
+
+.stat-label {
+  font-size: 12px;
+  margin-top: 5px;
+  color: #666;
+}
+
+.view-details-btn {
+  display: block;
+  width: 80%;
+  margin: 20px auto 0;
+  padding: 10px 15px;
+  background-color: var(--primary-color, #3a67b2);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.view-details-btn:hover {
+  background-color: var(--accent-color, #2a5798);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* 翻转效果 */
+.card-3d:hover .card-inner {
+  transform: rotateY(180deg);
+}
+
+/* 材质详情弹窗样式 */
+.material-modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.75);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.material-modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  background-color: white;
+  width: 90%;
+  max-width: 900px;
+  max-height: 90vh;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  transform: translateY(-30px);
+  opacity: 0;
+  transition: all 0.4s ease;
+}
+
+.material-modal.active .modal-content {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 30px;
+  background-color: var(--primary-color, #3a67b2);
+  color: white;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.close-modal {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.close-modal:hover {
+  transform: rotate(90deg);
+}
+
+.modal-body {
+  padding: 30px;
+  overflow-y: auto;
+  max-height: 70vh;
+}
+
+/* 材质预览样式 */
+.material-preview {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.material-3d-preview {
+  flex: 1;
+  height: 250px;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #f5f5f5;
+  position: relative;
+}
+
+.material-texture {
+  flex: 1;
+  height: 250px;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* 物理特性图表 */
+.property-chart {
+  margin: 20px 0;
+}
+
+.chart-bar {
+  height: 30px;
+  background-color: var(--primary-color, #3a67b2);
+  border-radius: 15px;
+  margin-bottom: 15px;
+  position: relative;
+  animation: barGrow 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: hidden;
+}
+
+.chart-bar.weight {
+  background-color: #4CAF50;
+}
+
+.chart-bar.stretch {
+  background-color: #2196F3;
+}
+
+.chart-bar.breathability {
+  background-color: #9C27B0;
+}
+
+.bar-label {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+@keyframes barGrow {
+  0% { width: 0; }
+  100% { width: 100%; }
+}
+
+/* 碳排放图表 */
+.carbon-circle {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto;
+}
+
+.carbon-circle svg {
+  width: 100%;
+  height: 100%;
+}
+
+.circle-bg {
+  fill: none;
+  stroke: #eee;
+  stroke-width: 3.8;
+}
+
+.circle-progress {
+  fill: none;
+  stroke: var(--primary-color, #3a67b2);
+  stroke-width: 3.8;
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  transition: stroke-dasharray 1s ease;
+}
+
+.percentage {
+  fill: var(--primary-color, #3a67b2);
+  font-size: 10px;
+  text-anchor: middle;
+  font-weight: bold;
+}
+
+/* 难度指示器 */
+.needle-icons {
+  display: flex;
+  gap: 5px;
+  margin: 10px 0;
+}
+
+.needle-icon {
+  color: var(--primary-color, #3a67b2);
+  font-size: 18px;
+}
+
+.needle-icon.inactive {
+  opacity: 0.3;
+}
+
+/* 应用案例 */
+.applications-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.application-item {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.application-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.application-image {
+  height: 100px;
+}
+
+.application-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.application-title {
+  padding: 10px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  background-color: #f9f9f9;
+}
+
+/* 控制按钮样式 */
+.wall-controls {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.wall-control-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background-color: white;
+  color: var(--primary-color, #3a67b2);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.wall-control-btn:hover {
+  background-color: var(--primary-color, #3a67b2);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* 分类按钮样式 */
+.material-categories {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 25px 0;
+}
+
+.category-btn {
+  padding: 8px 16px;
+  border: 2px solid transparent;
+  border-radius: 30px;
+  background-color: #f0f0f0;
+  color: #666;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.category-btn:hover {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.category-btn.active {
+  background-color: var(--primary-color, #3a67b2);
+  color: white;
+  border-color: var(--primary-color, #3a67b2);
+}
+
+/* 响应式布局 */
+@media (max-width: 992px) {
+  .material-preview {
+    flex-direction: column;
+  }
+  
+  .material-3d-preview, .material-texture {
+    height: 200px;
+  }
+  
+  .properties-data {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 768px) {
+  .material-wall {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+  
+  .modal-body {
+    padding: 20px;
+  }
+  
+  .wall-controls {
+    gap: 10px;
+  }
+  
+  .wall-control-btn {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .applications-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+}
+
+@media (max-width: 576px) {
+  .material-wall {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+  
+  .modal-content {
+    width: 95%;
+  }
+  
+  .modal-header {
+    padding: 15px 20px;
+  }
+  
+  .modal-header h3 {
+    font-size: 18px;
+  }
+  
+  .carbon-circle {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+/* VOGUE风格的材质图书馆样式 */
+.vogue-library-header {
+  text-align: left;
+  margin-bottom: 50px;
+  position: relative;
+}
+
+.vogue-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin: 0;
+  line-height: 1.2;
+  color: #111;
+}
+
+.vogue-subtitle {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 6px;
+  color: #777;
+  margin: 5px 0 20px;
+}
+
+.vogue-description {
+  font-family: 'Lato', sans-serif;
+  font-size: 1.2rem;
+  max-width: 600px;
+  margin: 0;
+  color: #555;
+  line-height: 1.6;
+}
+
+.vogue-separator {
+  width: 50px;
+  height: 3px;
+  background-color: #000;
+  margin: 25px 0;
+}
+
+/* 分类按钮改造 */
+.material-categories {
+  margin: 30px 0 50px;
+  text-align: center;
+}
+
+.category-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 15px;
+  color: #777;
+}
+
+.category-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.category-btn {
+  padding: 8px 20px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  border: 1px solid #ddd;
+  background-color: transparent;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.category-btn:hover {
+  border-color: #000;
+  color: #000;
+}
+
+.category-btn.active {
+  background-color: #000;
+  color: #fff;
+  border-color: #000;
+}
+
+/* 材质展示墙 */
+.vogue-material-gallery {
+  position: relative;
+  margin: 50px 0;
+}
+
+.gallery-controls {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.control-group {
+  display: flex;
+  gap: 10px;
+}
+
+.gallery-control {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background-color: #f5f5f5;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.gallery-control:hover {
+  background-color: #000;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.gallery-control.reset {
+  background-color: #e0e0e0;
+}
+
+.gallery-control.reset:hover {
+  background-color: #000;
+}
+
+/* 材质卡片 VOGUE 风格 */
+.material-wall {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 40px;
+  padding: 20px 0;
+}
+
+.material-card {
+  height: 400px;
+  border-radius: 0;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+.card-front {
+  background: #fff;
+}
+
+.card-front img {
+  height: 85%;
+  object-fit: cover;
+  transition: transform 0.7s ease;
+}
+
+.material-name {
+  padding: 20px;
+  text-align: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #000;
+  background: #fff;
+}
+
+.card-back {
+  background: linear-gradient(135deg, #fff 0%, #f5f5f5 100%);
+  padding: 40px 30px;
+}
+
+.card-back h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  margin-bottom: 25px;
+  text-align: center;
+  color: #000;
+}
+
+.view-details-btn {
+  background-color: #000;
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 12px 0;
+  transition: all 0.3s ease;
+}
+
+.view-details-btn:hover {
+  background-color: #333;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+/* 推荐材质部分 */
+.vogue-material-featured {
+  margin: 70px 0;
+  padding: 50px 0;
+  background-color: #f9f9f9;
+}
+
+.featured-heading {
+  text-align: center;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.featured-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 3px;
+  color: #777;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.featured-heading h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  color: #000;
+  margin: 0;
+}
+
+.featured-materials {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  padding: 0 20px;
+}
+
+.featured-item {
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  transition: all 0.4s ease;
+}
+
+.featured-item:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.featured-image {
+  height: 250px;
+  overflow: hidden;
+}
+
+.featured-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.featured-item:hover .featured-image img {
+  transform: scale(1.05);
+}
+
+.featured-info {
+  padding: 25px;
+}
+
+.featured-info h5 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  margin: 0 0 10px;
+  color: #000;
+}
+
+.featured-info p {
+  font-family: 'Lato', sans-serif;
+  color: #666;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* 材质弹窗 VOGUE 风格 */
+.vogue-modal-header {
+  background-color: #000;
+  padding: 25px 35px;
+}
+
+.vogue-modal-header h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.vogue-modal-body {
+  padding: 40px;
+}
+
+.vogue-modal-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 40px;
+  background-color: #f5f5f5;
+}
+
+.vogue-modal-footer .btn {
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
+  padding: 12px 25px;
+  border-radius: 0;
+  transition: all 0.3s ease;
+}
+
+.vogue-modal-footer .btn-outline {
+  border: 1px solid #000;
+  color: #000;
+  background: transparent;
+}
+
+.vogue-modal-footer .btn-primary {
+  background-color: #000;
+  color: #fff;
+  border: 1px solid #000;
+}
+
+.vogue-modal-footer .btn-outline:hover {
+  background-color: #000;
+  color: #fff;
+}
+
+.vogue-modal-footer .btn-primary:hover {
+  background-color: #333;
+  border-color: #333;
+}
+
+/* VOGUE风格的动画和过渡效果 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes voguePulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0,0,0,0.3);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(0,0,0,0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0,0,0,0);
+  }
+}
+
+/* 添加进入动画 */
+.vogue-title, .vogue-subtitle, .vogue-description {
+  animation: fadeInUp 1s forwards;
+}
+
+.vogue-title {
+  animation-delay: 0.1s;
+}
+
+.vogue-subtitle {
+  animation-delay: 0.3s;
+}
+
+.vogue-description {
+  animation-delay: 0.5s;
+}
+
+.vogue-separator {
+  animation: fadeInScale 1s forwards;
+  animation-delay: 0.7s;
+  opacity: 0;
+}
+
+/* 分类按钮动画 */
+.category-buttons .category-btn {
+  animation: fadeInUp 0.6s forwards;
+  opacity: 0;
+}
+
+.category-buttons .category-btn:nth-child(1) { animation-delay: 0.1s; }
+.category-buttons .category-btn:nth-child(2) { animation-delay: 0.2s; }
+.category-buttons .category-btn:nth-child(3) { animation-delay: 0.3s; }
+.category-buttons .category-btn:nth-child(4) { animation-delay: 0.4s; }
+.category-buttons .category-btn:nth-child(5) { animation-delay: 0.5s; }
+.category-buttons .category-btn:nth-child(6) { animation-delay: 0.6s; }
+
+/* 控制按钮悬浮效果 */
+.gallery-control:hover {
+  animation: voguePulse 1.5s infinite;
+}
+
+/* 材质卡片增强效果 */
+.material-card {
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  position: relative;
+}
+
+.material-card:hover {
+  transform: translateY(-15px);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+}
+
+.material-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background-color: #000;
+  transform: scaleX(0);
+  transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  transform-origin: right;
+}
+
+.material-card:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* 模态框动画 */
+.vogue-animation {
+  animation: fadeInScale 0.5s forwards !important;
+}
+
+.modal-content {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* 特色材质部分增强 */
+.featured-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.featured-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0) 100%);
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.featured-item:hover::before {
+  opacity: 1;
+}
+
+.featured-info {
+  position: relative;
+  z-index: 2;
+}
+
+.featured-info::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50px;
+  height: 2px;
+  background-color: #000;
+  transition: width 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.featured-item:hover .featured-info::after {
+  width: 100px;
+} 

@@ -1,0 +1,742 @@
+/* 3D Cube Styles */
+.showcase-cube {
+  width: 300px;
+  height: 300px;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(-15deg) rotateY(15deg);
+  transition: transform 0.5s ease;
+}
+
+.cube-face {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border: 2px solid var(--color-gold);
+  background-color: white;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  cursor: grab;
+  transition: var(--transition-regular);
+}
+
+.cube-face img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cube-face:hover {
+  box-shadow: 0 0 30px rgba(183, 110, 121, 0.3);
+}
+
+.face-1 {
+  transform: translateZ(150px);
+}
+
+.face-2 {
+  transform: rotateY(90deg) translateZ(150px);
+}
+
+.face-3 {
+  transform: rotateY(180deg) translateZ(150px);
+}
+
+.face-4 {
+  transform: rotateY(-90deg) translateZ(150px);
+}
+
+.face-5 {
+  transform: rotateX(90deg) translateZ(150px);
+}
+
+.face-6 {
+  transform: rotateX(-90deg) translateZ(150px);
+}
+
+/* 项目卡片样式 */
+.project-card {
+  height: 350px;
+  background-color: white;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+  cursor: pointer;
+}
+
+.project-card .card-inner {
+  width: 100%;
+  height: 100%;
+}
+
+.project-card .card-front,
+.project-card .card-back {
+  width: 100%;
+  height: 100%;
+  padding: 1.5rem;
+}
+
+.project-card .card-front {
+  display: flex;
+  flex-direction: column;
+}
+
+.project-card .card-front img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 3px;
+  margin-bottom: 1rem;
+}
+
+.project-card h4 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.difficulty-stars {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.star {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  background-color: rgba(47, 47, 47, 0.1);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.star.filled {
+  background-color: var(--color-accent);
+}
+
+.project-card .card-back {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: var(--color-primary);
+  color: var(--color-secondary);
+}
+
+.material-chart h5 {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.chart-container {
+  width: 150px;
+  height: 150px;
+  margin: 0 auto;
+}
+
+.story-preview {
+  margin: 1rem 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.view-button {
+  background-color: var(--color-accent);
+  color: white;
+  padding: 0.8rem;
+  width: 100%;
+  border-radius: 3px;
+  text-align: center;
+}
+
+/* 项目详情模态框 */
+.project-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(47, 47, 47, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+}
+
+.modal-content {
+  position: relative;
+  width: 90%;
+  max-width: 1000px;
+  max-height: 90vh;
+  background-color: var(--color-secondary);
+  border-radius: 5px;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.close-modal {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 2rem;
+  background-color: transparent;
+  color: var(--color-primary);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.close-modal:hover {
+  background-color: rgba(47, 47, 47, 0.1);
+}
+
+.project-detail h3 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+  display: inline-block;
+}
+
+.project-detail h3::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--color-gold);
+}
+
+.before-after-slider {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.before-after-slider img {
+  width: 48%;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.project-detail p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.design-sketch {
+  width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  border: 1px solid rgba(47, 47, 47, 0.1);
+  padding: 1rem;
+  background-color: white;
+}
+
+/* 聊天界面样式 */
+.message {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  max-width: 80%;
+  position: relative;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.user-message {
+  background-color: rgba(183, 110, 121, 0.2);
+  border-top-right-radius: 2px;
+  align-self: flex-end;
+  margin-left: auto;
+  color: var(--color-secondary);
+}
+
+.system-message {
+  background-color: rgba(250, 249, 246, 0.15);
+  border-top-left-radius: 2px;
+  margin-right: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  color: var(--color-secondary);
+}
+
+.needle-icon {
+  color: var(--color-gold);
+  font-size: 1.2rem;
+}
+
+/* 添加微信号样式 */
+.system-message span strong {
+  color: var(--color-gold);
+  font-weight: bold;
+  font-family: var(--font-special);
+  background-color: rgba(212, 175, 55, 0.1);
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+}
+
+.chat-messages {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  overflow-y: auto;
+  background: radial-gradient(circle at top right, rgba(183, 110, 121, 0.05), transparent 80%),
+              radial-gradient(circle at bottom left, rgba(212, 175, 55, 0.05), transparent 80%);
+}
+
+/* 侧边栏标题样式 */
+.sidebar-header {
+  padding: 1rem;
+  font-weight: bold;
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  border-bottom: 1px solid rgba(250, 249, 246, 0.1);
+  margin-bottom: 1rem;
+  color: var(--color-gold);
+  text-align: center;
+  letter-spacing: 0.5px;
+  position: relative;
+}
+
+/* 当前时间样式 */
+.current-time {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--color-accent);
+  margin-top: 0.3rem;
+  font-family: var(--font-special);
+  letter-spacing: 1px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
+
+/* 日期图标样式 */
+.date-icon {
+  margin-right: 5px;
+  font-size: 0.9rem;
+  color: var(--color-gold);
+  opacity: 0.8;
+}
+
+.session-date {
+  font-size: 0.8rem;
+  color: rgba(250, 249, 246, 0.6);
+  display: flex;
+  align-items: center;
+  transition: var(--transition-regular);
+}
+
+.session-item:hover .session-date {
+  color: rgba(250, 249, 246, 0.9);
+}
+
+.session-item.active .session-date {
+  color: var(--color-gold);
+}
+
+/* 历史会话项样式 */
+.session-item {
+  padding: 0.8rem;
+  margin-bottom: 0.8rem;
+  border-radius: 5px;
+  background-color: rgba(250, 249, 246, 0.05);
+  cursor: pointer;
+  transition: var(--transition-regular);
+  border-left: 3px solid transparent;
+  position: relative;
+}
+
+.session-item:hover {
+  background-color: rgba(250, 249, 246, 0.1);
+  border-left-color: var(--color-accent);
+}
+
+.session-item.active {
+  background-color: rgba(183, 110, 121, 0.1);
+  border-left-color: var(--color-gold);
+}
+
+/* 新会话按钮样式 */
+.session-item.new-chat {
+  background-color: rgba(183, 110, 121, 0.15);
+  border-left-color: var(--color-accent);
+  margin-bottom: 1.5rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.session-item.new-chat .session-title {
+  font-weight: bold;
+  color: var(--color-accent);
+}
+
+.session-item.new-chat:hover {
+  background-color: rgba(183, 110, 121, 0.25);
+  transform: translateY(-2px);
+}
+
+.session-item.new-chat::before {
+  content: '➕';
+  margin-right: 8px;
+  font-size: 0.9rem;
+  color: var(--color-accent);
+}
+
+.session-title {
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+  color: var(--color-secondary);
+  word-break: break-word;
+}
+
+/* 确保聊天区域与对接进度面板不重叠 */
+.inventory .chat-interface {
+  overflow: visible;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(250, 249, 246, 0.1);
+}
+
+.inventory .tracking-panel {
+  position: relative;
+  z-index: 2;
+  margin-top: 2.5rem;
+  border-top: 1px solid rgba(250, 249, 246, 0.1);
+  padding-top: 2.5rem;
+}
+
+.active-filter {
+  background-color: var(--color-accent);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 3px;
+  margin-top: 1rem;
+  display: inline-block;
+}
+
+/* 暗色模式 */
+body.dark-mode {
+  background-color: #1a1a1a;
+  color: var(--color-secondary);
+}
+
+body.dark-mode .navbar {
+  background-color: rgba(26, 26, 26, 0.95);
+  color: var(--color-secondary);
+}
+
+body.dark-mode .showcase,
+body.dark-mode .community {
+  background-color: #1a1a1a;
+  color: var(--color-secondary);
+}
+
+body.dark-mode .workshop,
+body.dark-mode .inventory,
+body.dark-mode footer {
+  background-color: #0f0f0f;
+}
+
+body.dark-mode .stat-item,
+body.dark-mode .project-card,
+body.dark-mode .modal-content {
+  background-color: #2a2a2a;
+  color: var(--color-secondary);
+}
+
+body.dark-mode .theme-switch {
+  color: var(--color-secondary);
+}
+
+/* 对接进度面板样式 */
+.progress-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 2rem 0;
+  padding: 0 1rem;
+  position: relative;
+}
+
+.progress-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  transition: var(--transition-regular);
+}
+
+.progress-stage:hover {
+  transform: translateY(-5px);
+}
+
+.stage-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-special);
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  transition: var(--transition-regular);
+}
+
+.stage-name {
+  font-size: 0.9rem;
+  text-align: center;
+  max-width: 80px;
+}
+
+.stage-connector {
+  flex: 1;
+  height: 3px;
+  margin: 0 5px;
+  position: relative;
+  top: -20px;
+}
+
+/* 进度状态颜色 */
+.status-completed .stage-number {
+  background-color: var(--color-accent);
+  color: white;
+}
+
+.status-active .stage-number {
+  background-color: var(--color-gold);
+  color: var(--color-primary);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+}
+
+.status-pending .stage-number {
+  background-color: rgba(250, 249, 246, 0.3);
+  color: rgba(250, 249, 246, 0.7);
+}
+
+.status-completed.stage-connector {
+  background-color: var(--color-accent);
+}
+
+.status-active.stage-connector {
+  background-color: var(--color-gold);
+}
+
+.status-pending.stage-connector {
+  background-color: rgba(250, 249, 246, 0.3);
+}
+
+.status-info {
+  text-align: center;
+  font-size: 0.9rem;
+  color: rgba(250, 249, 246, 0.7);
+}
+
+.status-active {
+  color: var(--color-gold);
+  font-weight: bold;
+}
+
+/* 进度详情模态框样式 */
+.progress-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(47, 47, 47, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+}
+
+.stage-detail {
+  padding: 1rem;
+}
+
+.stage-detail h3 {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  display: inline-block;
+}
+
+.stage-detail h3::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--color-gold);
+}
+
+.stage-detail p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.stage-detail h4 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}
+
+.stage-detail ul {
+  padding-left: 1.5rem;
+}
+
+.stage-detail li {
+  margin-bottom: 0.8rem;
+  line-height: 1.4;
+}
+
+/* 联系方式高亮 */
+.contact-highlight, 
+.progress-stage strong,
+.process-message strong, 
+.stage-detail strong {
+  color: var(--color-accent);
+  font-weight: bold;
+  font-family: var(--font-special);
+  background-color: rgba(183, 110, 121, 0.1);
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: var(--transition-regular);
+}
+
+.contact-highlight:hover,
+.progress-stage strong:hover,
+.process-message strong:hover,
+.stage-detail strong:hover {
+  background-color: rgba(183, 110, 121, 0.2);
+  transform: scale(1.05);
+}
+
+.process-message {
+  text-align: center;
+  margin: 1rem 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: rgba(250, 249, 246, 0.9);
+}
+
+/* 库存匹配系统容器样式 */
+.inventory .container {
+  background-color: var(--color-primary);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+.section-header {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.cube-container {
+  position: relative;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.cube {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  transform-style: preserve-3d;
+  transform: rotateX(-15deg) rotateY(15deg);
+  animation: cube-rotate 10s infinite linear;
+  margin: 0 auto;
+}
+
+@keyframes cube-rotate {
+  0% {
+    transform: rotateX(-15deg) rotateY(0deg);
+  }
+  100% {
+    transform: rotateX(-15deg) rotateY(360deg);
+  }
+}
+
+.cube-face {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background-color: rgba(250, 249, 246, 0.05);
+  border: 1px solid var(--color-gold);
+}
+
+.cube-face-front {
+  transform: translateZ(30px);
+}
+
+.cube-face-back {
+  transform: rotateY(180deg) translateZ(30px);
+}
+
+.cube-face-right {
+  transform: rotateY(90deg) translateZ(30px);
+}
+
+.cube-face-left {
+  transform: rotateY(-90deg) translateZ(30px);
+}
+
+.cube-face-top {
+  transform: rotateX(90deg) translateZ(30px);
+}
+
+.cube-face-bottom {
+  transform: rotateX(-90deg) translateZ(30px);
+}
+
+/* 删除会话按钮 */
+.delete-session {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  opacity: 0;
+  color: rgba(250, 249, 246, 0.5);
+  font-size: 0.8rem;
+  transition: var(--transition-regular);
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.session-item:hover .delete-session {
+  opacity: 0.7;
+}
+
+.delete-session:hover {
+  color: var(--color-accent);
+  background-color: rgba(250, 249, 246, 0.1);
+  opacity: 1 !important;
+} 
